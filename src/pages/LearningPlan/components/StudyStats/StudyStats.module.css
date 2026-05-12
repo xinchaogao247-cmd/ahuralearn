@@ -1,0 +1,14 @@
+.card {
+  background: #f8fafc;
+  border-radius: 32px;
+  padding: 40px;
+  max-width: 1200px;
+  margin: 48px auto 120px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.taskList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}

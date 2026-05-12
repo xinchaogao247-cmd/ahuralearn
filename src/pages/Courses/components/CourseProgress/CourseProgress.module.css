@@ -1,0 +1,71 @@
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.line {
+  flex: 1;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.fill {
+  width: 65%;
+  height: 100%;
+  background: #ff5b00;
+  border-radius: 999px;
+}
+
+.second {
+  width: 32%;
+}
+
+.third {
+  width: 100%;
+  background: #10b981;
+}
+
+.progress span {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+:global(.course-progress) {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+:global(.progress-line) {
+  flex: 1;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+:global(.progress-fill) {
+  width: 65%;
+  height: 100%;
+  background: #ff5b00;
+  border-radius: 999px;
+}
+
+:global(.progress-fill.second) {
+  width: 32%;
+}
+
+:global(.progress-fill.third) {
+  width: 100%;
+  background: #10b981;
+}
+
+:global(.course-progress span) {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}

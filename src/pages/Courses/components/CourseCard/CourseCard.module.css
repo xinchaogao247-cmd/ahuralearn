@@ -1,0 +1,229 @@
+.card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 26px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.image {
+  height: 170px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  margin: 16px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+  transition: 0.35s;
+}
+
+.card:hover .image {
+  transform: scale(1.03);
+}
+
+.badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: white;
+  color: #ff5b00;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.completed {
+  color: white;
+  background: #10b981;
+}
+
+.content {
+  padding: 22px;
+}
+
+.content h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.content p {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.meta span:first-child {
+  color: #f59e0b;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.meta span:last-child {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.actionIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.25s;
+  cursor: pointer;
+}
+
+.actionIcon:hover {
+  transform: translateY(-2px);
+  background: #fff7ed;
+}
+
+.gameIcon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+:global(.course-card-large) {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 26px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+:global(.course-card-large:hover) {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+:global(.course-image) {
+  height: 170px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  margin: 16px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+  transition: 0.35s;
+}
+
+:global(.course-card-large:hover .course-image) {
+  transform: scale(1.03);
+}
+
+:global(.course-badge) {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: white;
+  color: #ff5b00;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+:global(.course-badge.completed) {
+  color: white;
+  background: #10b981;
+}
+
+:global(.course-content) {
+  padding: 22px;
+}
+
+:global(.course-content h3) {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+:global(.course-content p) {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+:global(.course-meta-row) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+:global(.course-meta) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+:global(.course-meta span:first-child) {
+  color: #f59e0b;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+:global(.course-meta span:last-child) {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+:global(.course-action-icon) {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.25s;
+  cursor: pointer;
+}
+
+:global(.course-action-icon:hover) {
+  transform: translateY(-2px);
+  background: #fff7ed;
+}
+
+:global(.game-icon) {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
