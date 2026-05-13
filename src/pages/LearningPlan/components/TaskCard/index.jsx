@@ -2,11 +2,18 @@ import styles from "./TaskCard.module.css";
 
 const cx = (...names) => names.map((name) => styles[name]).filter(Boolean).join(" ");
 
-export default function TaskCard({ task }) {
+export default function TaskCard({ task, onToggleComplete }) {
+  const isDone = task.done || task.completed;
+
   return (
-    <div className={cx("taskItem", task.active && "active", task.finished && "finished")}>
+    <div className={cx("taskItem", task.active && !isDone && "active", isDone && "finished")}>
       <div className={styles.taskLeft}>
-        <div className={cx("taskCheck", task.done && "done")}></div>
+        <button
+          className={cx("taskCheck", isDone && "done")}
+          type="button"
+          aria-label={isDone ? "Mark task as incomplete" : "Mark task as complete"}
+          onClick={() => onToggleComplete(task.id)}
+        ></button>
 
         <div>
           <h3>{task.title}</h3>
@@ -25,8 +32,8 @@ export default function TaskCard({ task }) {
         </div>
       </div>
 
-      <span className={task.active ? styles.dueText : styles.taskGray}>
-        {task.dueText}
+      <span className={task.active && !isDone ? styles.dueText : styles.taskGray}>
+        {isDone ? "Finished" : task.dueText}
       </span>
     </div>
   );

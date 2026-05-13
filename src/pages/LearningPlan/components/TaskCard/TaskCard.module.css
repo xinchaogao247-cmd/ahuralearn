@@ -37,10 +37,32 @@
   height: 24px;
   border-radius: 8px;
   background: #e2e8f0;
+  border: none;
+  cursor: pointer;
+  flex: 0 0 auto;
+  position: relative;
+  transition: 0.2s;
+}
+
+.taskCheck:hover {
+  transform: scale(1.08);
+  background: #cbd5e1;
 }
 
 .done {
   background: linear-gradient(135deg, #fed7aa, #fdba74);
+}
+
+.done::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 4px;
+  width: 6px;
+  height: 12px;
+  border: solid #9a3412;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
 }
 
 .taskLeft h3 {

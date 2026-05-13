@@ -16,8 +16,7 @@
   gap: 16px;
 }
 
-.manualBtn,
-.aiBtn {
+.actionBtn {
   height: 52px;
   padding: 0 28px;
   border-radius: 16px;
@@ -28,23 +27,36 @@
   transition: 0.25s;
 }
 
-.manualBtn {
+.manualBtn,
+.activeManual {
   background: white;
   color: #475569;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
-.manualBtn:hover {
+.manualBtn:hover,
+.aiBtn:hover,
+.activeManual:hover,
+.activeAi:hover {
   transform: translateY(-2px);
 }
 
-.aiBtn {
+.aiBtn,
+.activeAi {
   background: #faf5ff;
   color: #f97316;
   border: 2px solid #e9d5ff;
 }
 
-.aiBtn:hover {
-  transform: translateY(-2px);
-  background: #f3e8ff;
+.activeManual {
+  background: #f97316;
+  color: white;
+  box-shadow: 0 12px 24px rgba(249, 115, 22, 0.28);
+}
+
+.activeAi {
+  background: #f97316;
+  border-color: #f97316;
+  color: white;
+  box-shadow: 0 12px 24px rgba(249, 115, 22, 0.28);
 }
