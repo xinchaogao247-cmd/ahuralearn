@@ -4,10 +4,12 @@ import ProgressBar from "../ProgressBar";
 import styles from "./GoalItem.module.css";
 
 export default function GoalItem({ goal }) {
-  const showProgress = !goal.achieved && goal.progress > 0;
+  const progress =
+    goal.total > 0 ? Math.round((goal.current / goal.total) * 100) : 0;
+  const showProgress = !goal.achieved && progress > 0;
 
   return (
-    <div className={`${styles.goalItem} ${showProgress ? styles.active : ""} ${goal.progress === 0 ? styles.muted : ""}`}>
+    <div className={`${styles.goalItem} ${showProgress ? styles.active : ""} ${progress === 0 ? styles.muted : ""}`}>
       <div className={`${styles.checkBox} ${goal.achieved ? styles.achieved : ""}`}>
         {goal.achieved ? <Check size={16} strokeWidth={3} /> : null}
       </div>
@@ -15,10 +17,10 @@ export default function GoalItem({ goal }) {
       <div className={styles.goalHeader}>
         <div>
           <h3>{goal.title}</h3>
-          {goal.achieved ? <span>ACHIEVED {goal.achievedDate}</span> : null}
+          {goal.achieved ? <span>ACHIEVED {goal.achievedDay}</span> : null}
         </div>
 
-        {showProgress ? <ProgressBar progress={goal.progress} /> : null}
+        {showProgress ? <ProgressBar progress={progress} /> : null}
       </div>
     </div>
   );

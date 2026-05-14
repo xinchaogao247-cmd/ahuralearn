@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
 
-import { getDashboardData } from "../api/dashboardApi";
+import { getLearningProgress } from "../api/learningProgressApi";
 
-export function useDashboard() {
-  const [data, setData] = useState(null);
+export function useLearningProgress() {
+  const [progress, setProgress] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     let ignore = false;
 
-    async function loadDashboardData() {
+    async function loadLearningProgress() {
       try {
         setLoading(true);
         setError(null);
 
-        const dashboardData = await getDashboardData();
+        const learningProgress = await getLearningProgress();
 
         if (!ignore) {
-          setData(dashboardData);
+          setProgress(learningProgress);
         }
       } catch (err) {
         if (!ignore) {
@@ -31,24 +31,16 @@ export function useDashboard() {
       }
     }
 
-    loadDashboardData();
+    loadLearningProgress();
 
     return () => {
       ignore = true;
     };
   }, []);
 
-  const empty =
-    !loading &&
-    !error &&
-    (!data ||
-      ((data.ongoingCourses?.length ?? 0) === 0 &&
-        (data.achievementStats?.length ?? 0) === 0));
-
   return {
-    data,
+    progress,
     loading,
     error,
-    empty,
   };
 }

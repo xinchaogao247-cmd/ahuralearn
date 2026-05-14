@@ -38,11 +38,7 @@ export function useAchievements() {
     };
   }, []);
 
-  const empty =
-    !loading &&
-    !error &&
-    (!data ||
-      ((data.badges?.length ?? 0) === 0 && (data.weeklyGoals?.length ?? 0) === 0));
+  const empty = !loading && !error && (!data || (data.badges?.length ?? 0) === 0);
 
   return {
     data,

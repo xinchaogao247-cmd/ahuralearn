@@ -35,6 +35,81 @@
   cursor: pointer;
 }
 
+.formPanel {
+  margin-bottom: 24px;
+  padding: 20px;
+  border-radius: 18px;
+  background: #f7f9fd;
+  box-shadow: inset 0 0 0 1px rgba(141, 160, 189, 0.18);
+}
+
+.formPanel form {
+  display: grid;
+  gap: 16px;
+}
+
+.formPanel label {
+  display: grid;
+  gap: 8px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.formPanel input {
+  width: 100%;
+  border: 1px solid #d7dfec;
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #0f172a;
+  font: inherit;
+  background: #ffffff;
+  outline: none;
+}
+
+.formPanel input:focus {
+  border-color: #f25a16;
+  box-shadow: 0 0 0 3px rgba(242, 90, 22, 0.14);
+}
+
+.formError {
+  margin: 0;
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.formActions button {
+  min-width: 92px;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.formActions button:first-child {
+  background: #ffffff;
+  color: #64748b;
+}
+
+.formActions button:last-child {
+  background: #f25a16;
+  color: #ffffff;
+}
+
+.formActions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
 .goalList {
   display: grid;
   gap: 20px;

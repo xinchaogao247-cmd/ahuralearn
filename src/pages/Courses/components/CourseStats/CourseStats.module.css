@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  align-self: start;
 }
 
 .sidebarCard {
@@ -49,10 +50,27 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
+.weeklyGoalsPanel {
+  max-height: 480px;
+  overflow-y: auto;
+  display: grid;
+  gap: 24px;
+  padding-right: 4px;
+}
+
+.weeklyGoalsPanel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.weeklyGoalsPanel::-webkit-scrollbar-thumb {
+  background: rgba(249, 115, 22, 0.35);
+  border-radius: 999px;
+}
+
 .goalTop {
   display: flex;
   align-items: center;
-  gap: 140px;
+  gap: 12px;
   margin-bottom: 20px;
 }
 
@@ -67,6 +85,26 @@
   font-size: 12px;
   font-weight: 700;
   margin: 0;
+  flex: 1;
+}
+
+.deleteButton {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.68);
+  color: #f97316;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.deleteButton:hover {
+  background: #ffffff;
+  color: #dc2626;
 }
 
 .goalCard h4 {
@@ -86,7 +124,7 @@
 }
 
 .goalFill {
-  width: 80%;
+  width: var(--goal-progress, 0%);
   height: 100%;
   background: #ff5b00;
   border-radius: 999px;

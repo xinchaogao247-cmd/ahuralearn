@@ -37,32 +37,4 @@ export const achievementsMock = {
       description: "Completed 12 courses.",
     },
   ],
-  weeklyGoals: [
-    {
-      id: 1,
-      title: "Complete 3 Python Modules",
-      achieved: true,
-      achievedDate: "Monday",
-      progress: 100,
-    },
-    {
-      id: 2,
-      title: "Solve 10 Logic Puzzles",
-      achieved: true,
-      achievedDate: "Wednesday",
-      progress: 100,
-    },
-    {
-      id: 3,
-      title: "Daily Streak 15/20 Days",
-      achieved: false,
-      progress: 75,
-    },
-    {
-      id: 4,
-      title: "Pass Mock Certification",
-      achieved: false,
-      progress: 0,
-    },
-  ],
 };

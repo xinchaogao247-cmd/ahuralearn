@@ -1,11 +1,4 @@
 export const learningPlanMockData = {
-  progress: {
-    title: "My Learning Progress",
-    message: "You're doing great this week, Alex!",
-    weeklyChange: "+10% This Week",
-    percentage: 75,
-    label: "COMPLETED",
-  },
   planner: {
     title: "Study Planner",
     actions: ["Manual Edit", "AI Suggest"],

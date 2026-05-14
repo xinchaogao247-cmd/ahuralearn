@@ -10,23 +10,25 @@ import uiuxImg from "../../../assets/images/uiux-course.png";
 export const coursesMock = [
   {
     id: 1,
-    title: "Advanced React Patterns",
+    title: "Web Development Masterclass",
     instructor: "Sarah Drasner",
     rating: "★ 4.9",
     reviews: "(1.2k reviews)",
     status: "IN PROGRESS",
-    progress: 65,
+    progress: 60,
+    lessons: "12/20 Lessons",
     image: reactImg,
     actionIcon: gameIcon,
   },
   {
     id: 2,
-    title: "Python for Data Science",
+    title: "Advanced React Patterns",
     instructor: "Jose Portner",
     rating: "★ 4.8",
     reviews: "(3.5k reviews)",
     status: "IN PROGRESS",
-    progress: 32,
+    progress: 35,
+    lessons: "7/20 Lessons",
     image: pythonImg,
     actionIcon: gameIcon,
     progressClass: "second",
@@ -47,7 +49,7 @@ export const coursesMock = [
 ];
 
 export const coursesPageMock = {
-  summary: "You have 3 courses in progress this week.",
+  summary: "You have 2 courses in progress this week.",
   filters: ["All", "In Progress", "Completed"],
   courses: coursesMock,
   categories: [

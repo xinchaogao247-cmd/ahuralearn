@@ -1,10 +1,25 @@
 import DashboardStats from "./components/DashboardStats";
 import LearningCard from "./components/LearningCard";
+import { useLearningProgress } from "../../shared/progress/hooks/useLearningProgress";
 import { useDashboard } from "./hooks/useDashboard";
 import styles from "./Dashboard.module.css";
 
 export default function Dashboard() {
-  const { data: dashboardData, loading, error, empty } = useDashboard();
+  const {
+    data: dashboardData,
+    loading: dashboardLoading,
+    error: dashboardError,
+    empty: dashboardEmpty,
+  } = useDashboard();
+  const {
+    progress,
+    loading: progressLoading,
+    error: progressError,
+  } = useLearningProgress();
+
+  const loading = dashboardLoading || progressLoading;
+  const error = dashboardError || progressError;
+  const empty = dashboardEmpty || !progress;
 
   if (loading) {
     return <main className={styles.dashboard}>Loading...</main>;
@@ -21,7 +36,7 @@ export default function Dashboard() {
   return (
     <main className={styles.dashboard}>
       <section className={styles.leftSection}>
-        <LearningCard progress={dashboardData.learningProgress} />
+        <LearningCard progress={progress} />
       </section>
 
       <section className={styles.rightSection}>
