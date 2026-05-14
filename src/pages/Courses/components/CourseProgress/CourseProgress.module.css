@@ -13,18 +13,16 @@
 }
 
 .fill {
-  width: 65%;
+  width: var(--progress-target);
   height: 100%;
   background: #ff5b00;
   border-radius: 999px;
-}
-
-.second {
-  width: 32%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: fillProgressBar 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .third {
-  width: 100%;
   background: #10b981;
 }
 
@@ -49,18 +47,16 @@
 }
 
 :global(.progress-fill) {
-  width: 65%;
+  width: var(--progress-target);
   height: 100%;
   background: #ff5b00;
   border-radius: 999px;
-}
-
-:global(.progress-fill.second) {
-  width: 32%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: fillProgressBar 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 :global(.progress-fill.third) {
-  width: 100%;
   background: #10b981;
 }
 
@@ -68,4 +64,22 @@
   font-size: 13px;
   font-weight: 600;
   color: #64748b;
+}
+
+@keyframes fillProgressBar {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fill,
+  :global(.progress-fill) {
+    animation: none;
+    transform: scaleX(1);
+  }
 }

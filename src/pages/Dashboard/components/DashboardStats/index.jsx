@@ -24,7 +24,7 @@ export default function DashboardStats({ courses, stats }) {
             <div className={styles.progressBar}>
               <div
                 className={styles.progressFill}
-                style={{ width: `${course.progress}%` }}
+                style={{ "--progress-target": `${course.progress}%` }}
               />
             </div>
 

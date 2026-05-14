@@ -6,7 +6,10 @@ export default function CourseProgress({ progress, progressClass }) {
   return (
     <div className={`${styles.progress} course-progress`}>
       <div className={`${styles.line} progress-line`}>
-        <div className={`${cx("fill", progressClass)} progress-fill ${progressClass || ""}`}></div>
+        <div
+          className={`${cx("fill", progressClass)} progress-fill ${progressClass || ""}`}
+          style={{ "--progress-target": `${progress}%` }}
+        ></div>
       </div>
       <span>{progress}%</span>
     </div>
