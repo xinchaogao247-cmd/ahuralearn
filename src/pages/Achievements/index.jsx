@@ -1,6 +1,5 @@
 import AchievementSummary from "./components/AchievementSummary";
 import WeeklyGoals from "./components/WeeklyGoals";
-import { addWeeklyGoal } from "../../shared/goals/api/weeklyGoalsApi";
 import { useWeeklyGoals } from "../../shared/goals/hooks/useWeeklyGoals";
 import { useAchievements } from "./hooks/useAchievements";
 import styles from "./Achievements.module.css";
@@ -13,9 +12,12 @@ function Achievements() {
     empty: achievementsEmpty,
   } = useAchievements();
   const {
+    goals,
     achievedGoals,
     loading: goalsLoading,
     error: goalsError,
+    addGoal,
+    deleteGoal,
   } = useWeeklyGoals();
 
   const loading = achievementsLoading || goalsLoading;
@@ -37,7 +39,7 @@ function Achievements() {
   return (
     <main className={styles.achievementsPage}>
       <AchievementSummary summary={data.summary} trophy={data.trophy} />
-      <WeeklyGoals goals={achievedGoals} onAddGoal={addWeeklyGoal} />
+      <WeeklyGoals goals={goals} onAddGoal={addGoal} onDeleteGoal={deleteGoal} />
     </main>
   );
 }

@@ -2,23 +2,16 @@ export const achievementsMock = {
   title: "Achievements Page",
   summary: {
     totalBadges: 42,
-    currentStreak: 15,
-    globalRank: "Top 2%",
-    nextMilestone: "MasterArchitect",
+    certificatesEarned: 6,
+    certificationName: "Machine Learning Certification",
     progress: 75,
-    currentXP: 300,
-    targetXP: 400,
-    level: 25,
     points: 1280,
     completedGoals: 12,
   },
   trophy: {
-    title: "MasterArchitect",
-    subtitle: "Next milestone",
+    title: "Machine Learning Certification",
+    subtitle: "Certification progress",
     progress: 75,
-    currentXP: 300,
-    targetXP: 400,
-    level: 25,
   },
   badges: [
     {

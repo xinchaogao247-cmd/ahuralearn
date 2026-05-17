@@ -1,3 +1,27 @@
+.progressWrap {
+  display: grid;
+  gap: 8px;
+}
+
+.progressHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.progressHeader span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.progressHeader strong {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 800;
+}
+
 .progress {
   display: flex;
   align-items: center;
@@ -30,6 +54,13 @@
   font-size: 13px;
   font-weight: 600;
   color: #64748b;
+}
+
+.sections {
+  min-width: 46px;
+  color: #172b4d !important;
+  font-weight: 800 !important;
+  text-align: right;
 }
 
 :global(.course-progress) {

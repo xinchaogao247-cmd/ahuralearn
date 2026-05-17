@@ -32,10 +32,12 @@ export async function addWeeklyGoal(newGoal) {
   const goal = {
     id: Date.now(),
     title: newGoal.title,
-    current: 0,
+    type: newGoal.type || "Learning",
+    current: Number(newGoal.current) || 0,
     total: Number(newGoal.total),
     achieved: false,
     achievedDay: null,
+    dueDay: newGoal.dueDay || "Friday",
   };
 
   if (useMockApi) {

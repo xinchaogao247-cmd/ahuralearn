@@ -21,6 +21,13 @@
   font-weight: 800;
 }
 
+.header p {
+  margin: 8px 0 0;
+  color: #8da0bd;
+  font-size: 13px;
+  font-weight: 800;
+}
+
 .header button {
   width: 36px;
   height: 36px;
@@ -48,6 +55,16 @@
   gap: 16px;
 }
 
+.formGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) repeat(4, minmax(120px, 0.45fr));
+  gap: 14px;
+}
+
+.titleField {
+  min-width: 0;
+}
+
 .formPanel label {
   display: grid;
   gap: 8px;
@@ -56,18 +73,21 @@
   font-weight: 800;
 }
 
-.formPanel input {
+.formPanel input,
+.formPanel select {
   width: 100%;
   border: 1px solid #d7dfec;
   border-radius: 10px;
   padding: 12px 14px;
   color: #0f172a;
   font: inherit;
+  font-weight: 700;
   background: #ffffff;
   outline: none;
 }
 
-.formPanel input:focus {
+.formPanel input:focus,
+.formPanel select:focus {
   border-color: #f25a16;
   box-shadow: 0 0 0 3px rgba(242, 90, 22, 0.14);
 }
@@ -113,4 +133,20 @@
 .goalList {
   display: grid;
   gap: 20px;
+}
+
+@media (max-width: 980px) {
+  .formGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .titleField {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
 }

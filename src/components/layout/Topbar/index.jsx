@@ -1,7 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Search, Bell } from 'lucide-react';
 import { logoutAccount } from '../../../api/user/user';
+import {
+  getUnreadNotificationCount,
+  notificationsUpdatedEvent,
+} from '../../../pages/Notifications/api/notificationStorage';
 import styles from './Topbar.module.css';
 import logoImage from "../../../assets/images/logo.png";
 
@@ -31,6 +35,26 @@ export default function TopNav() {
   const navigate = useNavigate();
   const [searchKeyword, setSearchKeyword] = useState('');
   const [userInfo] = useState(getInitialUserInfo);
+  const [notificationCount, setNotificationCount] = useState(
+    getUnreadNotificationCount
+  );
+
+  useEffect(() => {
+    const updateNotificationCount = () => {
+      setNotificationCount(getUnreadNotificationCount());
+    };
+
+    window.addEventListener(notificationsUpdatedEvent, updateNotificationCount);
+    window.addEventListener("storage", updateNotificationCount);
+
+    return () => {
+      window.removeEventListener(
+        notificationsUpdatedEvent,
+        updateNotificationCount
+      );
+      window.removeEventListener("storage", updateNotificationCount);
+    };
+  }, []);
 
   const handleSearch = (e) => {
     if (e.key === 'Enter' || e.type === 'click') {
@@ -80,13 +104,22 @@ export default function TopNav() {
       <div className={styles.navRight}>
         <div className={styles.navExtraLinks}>
           <Link to="#" className={`${styles.navLinkItem} ${styles.navLearnWithAI}`}>Learn with AI</Link>
-          <Link to="#" className={styles.navLinkItem}>My Profile</Link>
+          <Link to="/" className={styles.navLinkItem}>My Profile</Link>
         </div>
 
         <div className={styles.navRightIcons}>
-          <div className={styles.notificationIconWrapper}>
+          <Link
+            to="/notifications"
+            className={styles.notificationIconWrapper}
+            aria-label="View notifications"
+          >
             <Bell size={20} />
-          </div>
+            {notificationCount > 0 && (
+              <span className={styles.notificationBadge}>
+                {notificationCount}
+              </span>
+            )}
+          </Link>
 
           <div className={styles.avatarWrapper}>
             <img src={userInfo.avatar} alt="User Avatar" className={styles.avatarImage} />

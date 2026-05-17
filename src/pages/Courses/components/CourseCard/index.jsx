@@ -16,6 +16,9 @@ export default function CourseCard({ course }) {
       </div>
 
       <div className={`${styles.content} course-content`}>
+        <span className={styles.courseId}>
+          Course ID: {course.courseId ?? course.id}
+        </span>
         <h3>{course.title}</h3>
         <p>{course.instructor}</p>
 
@@ -30,7 +33,12 @@ export default function CourseCard({ course }) {
           </div>
         </div>
 
-        <CourseProgress progress={course.progress} progressClass={course.progressClass} />
+        <CourseProgress
+          learnedSections={course.learnedSections}
+          progress={course.progress}
+          progressClass={course.progressClass}
+          totalSections={course.totalSections}
+        />
       </div>
     </div>
   );

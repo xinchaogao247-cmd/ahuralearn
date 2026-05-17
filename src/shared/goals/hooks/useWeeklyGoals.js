@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { deleteWeeklyGoal, getWeeklyGoals } from "../api/weeklyGoalsApi";
+import {
+  addWeeklyGoal,
+  deleteWeeklyGoal,
+  getWeeklyGoals,
+} from "../api/weeklyGoalsApi";
 
 export function useWeeklyGoals() {
   const [goals, setGoals] = useState([]);
@@ -53,12 +57,21 @@ export function useWeeklyGoals() {
     setGoals((currentGoals) => currentGoals.filter((goal) => goal.id !== id));
   };
 
+  const addGoal = async (newGoal) => {
+    const createdGoal = await addWeeklyGoal(newGoal);
+
+    setGoals((currentGoals) => [createdGoal, ...currentGoals]);
+
+    return createdGoal;
+  };
+
   return {
     goals,
     activeGoals,
     achievedGoals,
     loading,
     error,
+    addGoal,
     deleteGoal,
   };
 }

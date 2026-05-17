@@ -2,7 +2,13 @@
   width: 100%;
   min-height: 100vh;
   padding: 34px 26px 80px;
-  background: #eef3f9;
+  background:
+    radial-gradient(
+      circle at top center,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(255, 255, 255, 0) 40%
+    ),
+    linear-gradient(180deg, #dfe9f7 0%, #d4e2f5 100%);
 }
 
 .examGrid {
@@ -13,12 +19,9 @@
   gap: 34px;
 }
 
-.status {
-  min-height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.pageStatus {
   color: #64748b;
   font-size: 16px;
   font-weight: 600;
 }
+

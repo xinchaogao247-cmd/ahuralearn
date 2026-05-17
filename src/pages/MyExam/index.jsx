@@ -10,15 +10,23 @@ export default function MyExam() {
   const { data, loading, error, empty } = useMyExam();
 
   if (loading) {
-    return <div className={styles.status}>Loading...</div>;
+    return <main className={`${styles.myExamPage} ${styles.pageStatus}`}>Loading...</main>;
   }
 
   if (error) {
-    return <div className={styles.status}>Failed to load exam data.</div>;
+    return (
+      <main className={`${styles.myExamPage} ${styles.pageStatus}`}>
+        Failed to load exam data.
+      </main>
+    );
   }
 
   if (empty) {
-    return <div className={styles.status}>No exam data found.</div>;
+    return (
+      <main className={`${styles.myExamPage} ${styles.pageStatus}`}>
+        No exam data found.
+      </main>
+    );
   }
 
   return (

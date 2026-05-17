@@ -30,6 +30,7 @@
   display: flex;
   align-items: center;
   gap: 20px;
+  min-width: 0;
 }
 
 .taskCheck {
@@ -73,8 +74,40 @@
 }
 
 .taskLeft p {
+  margin-top: 8px;
   color: #94a3b8;
   font-size: 15px;
+}
+
+.manualMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.manualMeta span {
+  width: fit-content;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.priorityHigh {
+  background: #fee2e2 !important;
+  color: #dc2626 !important;
+}
+
+.priorityMedium {
+  background: #ffedd5 !important;
+  color: #ea580c !important;
+}
+
+.priorityLow {
+  background: #dcfce7 !important;
+  color: #16a34a !important;
 }
 
 .taskTags {
@@ -107,4 +140,37 @@
 .taskGray {
   color: #94a3b8;
   font-size: 18px;
+}
+
+.taskRight {
+  display: grid;
+  justify-items: end;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+.taskActions {
+  display: flex;
+  gap: 8px;
+}
+
+.taskActions button {
+  border: none;
+  border-radius: 999px;
+  padding: 7px 12px;
+  background: #f1f5f9;
+  color: #475569;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.taskActions button:hover {
+  background: #f97316;
+  color: #ffffff;
+  transform: translateY(-1px);
 }

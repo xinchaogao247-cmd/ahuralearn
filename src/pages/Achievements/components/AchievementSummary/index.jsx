@@ -10,14 +10,8 @@ export default function AchievementSummary({ summary, trophy }) {
       value: summary.totalBadges,
     },
     {
-      label: "CURRENT STREAK",
-      value: summary.currentStreak,
-      accent: true,
-      icon: "flame",
-    },
-    {
-      label: "GLOBAL RANK",
-      value: summary.globalRank,
+      label: "CERTIFICATES EARNED",
+      value: summary.certificatesEarned,
     },
   ];
 
@@ -34,16 +28,12 @@ export default function AchievementSummary({ summary, trophy }) {
 
           <div className={styles.milestoneRow}>
             <p>
-              Next Milestone: <span>{summary.nextMilestone}</span>
+              Certification Progress: <span>{summary.certificationName}</span>
             </p>
             <strong>{summary.progress}%</strong>
           </div>
 
           <ProgressBar progress={summary.progress} variant="summary" />
-
-          <p className={styles.xpText}>
-            {summary.currentXP}/{summary.targetXP} XP to reach Level {summary.level}
-          </p>
         </div>
 
         <TrophyCard trophy={trophy} />
