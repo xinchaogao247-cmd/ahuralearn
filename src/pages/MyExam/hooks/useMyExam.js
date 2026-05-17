@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-import { getCoursesPageData } from "../api/coursesApi";
+import { getMyExamPageData } from "../api/myExamApi";
 
-export function useCourses() {
+export function useMyExam() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -10,15 +10,15 @@ export function useCourses() {
   useEffect(() => {
     let ignore = false;
 
-    async function loadCoursesData() {
+    async function loadMyExamData() {
       try {
         setLoading(true);
         setError(null);
 
-        const coursesData = await getCoursesPageData();
+        const myExamData = await getMyExamPageData();
 
         if (!ignore) {
-          setData(coursesData);
+          setData(myExamData);
         }
       } catch (err) {
         if (!ignore) {
@@ -31,14 +31,20 @@ export function useCourses() {
       }
     }
 
-    loadCoursesData();
+    loadMyExamData();
 
     return () => {
       ignore = true;
     };
-  }, []);  
+  }, []);
 
-  const empty = !loading && !error && (!data || (data.courses?.length ?? 0) === 0);
+  const empty =
+    !loading &&
+    !error &&
+    (!data ||
+      !data.result ||
+      (data.subjects?.length ?? 0) === 0 ||
+      (data.recentExams?.length ?? 0) === 0);
 
   return {
     data,
