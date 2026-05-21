@@ -3,6 +3,7 @@ import { Bot, Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import GeneratedPlanPreview from "./components/GeneratedPlanPreview";
+import MainLayout from "../../layouts/MainLayout";
 import { useAIStudyPlan } from "./hooks/useAIStudyPlan";
 import styles from "./AIStudyPlan.module.css";
 
@@ -27,15 +28,33 @@ export default function AIStudyPlan() {
   }, []);
 
   if (loading) {
-    return <main className={`${styles.aiStudyPlanPage} ${styles.pageStatus}`}>Loading AI study plan...</main>;
+    return (
+      <MainLayout>
+        <main className={`${styles.aiStudyPlanPage} ${styles.pageStatus}`}>
+          Loading AI study plan...
+        </main>
+      </MainLayout>
+    );
   }
 
   if (error) {
-    return <main className={`${styles.aiStudyPlanPage} ${styles.pageStatus}`}>Failed to load AI study plan</main>;
+    return (
+      <MainLayout>
+        <main className={`${styles.aiStudyPlanPage} ${styles.pageStatus}`}>
+          Failed to load AI study plan
+        </main>
+      </MainLayout>
+    );
   }
 
   if (empty) {
-    return <main className={`${styles.aiStudyPlanPage} ${styles.pageStatus}`}>No generated plan found</main>;
+    return (
+      <MainLayout>
+        <main className={`${styles.aiStudyPlanPage} ${styles.pageStatus}`}>
+          No generated plan found
+        </main>
+      </MainLayout>
+    );
   }
 
   const displayedMessages = messages;
@@ -96,92 +115,94 @@ export default function AIStudyPlan() {
   const canSend = answer.trim().length > 0 && !isResponding;
 
   return (
-    <main className={styles.aiStudyPlanPage}>
-      <section className={styles.pageHeader}>
-        <h1>Build Your Study Plan</h1>
-        <p>Let's tailor your learning journey with our AI architect.</p>
-      </section>
+    <MainLayout>
+      <main className={styles.aiStudyPlanPage}>
+        <section className={styles.pageHeader}>
+          <h1>Build Your Study Plan</h1>
+          <p>Let's tailor your learning journey with our AI architect.</p>
+        </section>
 
-      <section className={styles.builderLayout}>
-        <div className={styles.chatCard}>
-          <div className={styles.chatList}>
-            {displayedMessages.map((message) => (
-              <div
-                className={`${styles.messageRow} ${
-                  message.role === "user" ? styles.userMessageRow : ""
-                }`}
-                key={message.id}
-              >
-                {message.role === "ai" && (
+        <section className={styles.builderLayout}>
+          <div className={styles.chatCard}>
+            <div className={styles.chatList}>
+              {displayedMessages.map((message) => (
+                <div
+                  className={`${styles.messageRow} ${
+                    message.role === "user" ? styles.userMessageRow : ""
+                  }`}
+                  key={message.id}
+                >
+                  {message.role === "ai" && (
+                    <div className={styles.botIcon}>
+                      <Bot size={18} strokeWidth={2.4} />
+                    </div>
+                  )}
+
+                  <div>
+                    <p
+                      className={`${styles.messageBubble} ${
+                        message.role === "user" ? styles.userBubble : ""
+                      }`}
+                    >
+                      {message.text}
+                    </p>
+                    <span className={styles.messageMeta}>{message.meta}</span>
+                  </div>
+
+                  {message.role === "user" && <div className={styles.userDot} />}
+                </div>
+              ))}
+
+              {isResponding && (
+                <div className={styles.messageRow}>
                   <div className={styles.botIcon}>
                     <Bot size={18} strokeWidth={2.4} />
                   </div>
-                )}
-
-                <div>
-                  <p
-                    className={`${styles.messageBubble} ${
-                      message.role === "user" ? styles.userBubble : ""
-                    }`}
-                  >
-                    {message.text}
+                  <p className={`${styles.messageBubble} ${styles.typingBubble}`}>
+                    Thinking...
                   </p>
-                  <span className={styles.messageMeta}>{message.meta}</span>
                 </div>
+              )}
+            </div>
 
-                {message.role === "user" && <div className={styles.userDot} />}
-              </div>
-            ))}
-
-            {isResponding && (
-              <div className={styles.messageRow}>
-                <div className={styles.botIcon}>
-                  <Bot size={18} strokeWidth={2.4} />
+            {showSuggestions && (
+              <div className={styles.suggestionsBlock}>
+                <span>AI Suggestions</span>
+                <div className={styles.suggestionChips}>
+                  {data.suggestions.map((suggestion) => (
+                    <button
+                      type="button"
+                      key={suggestion}
+                      disabled={isResponding}
+                      onClick={() => addUserAnswer(suggestion)}
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
                 </div>
-                <p className={`${styles.messageBubble} ${styles.typingBubble}`}>
-                  Thinking...
-                </p>
               </div>
             )}
+
+            <form className={styles.answerBar} onSubmit={handleSubmitAnswer}>
+              <input
+                disabled={isResponding}
+                value={answer}
+                onChange={(event) => setAnswer(event.target.value)}
+                placeholder="Type your answer here..."
+              />
+              <button type="submit" aria-label="Send answer" disabled={!canSend}>
+                <Send size={18} strokeWidth={2.6} />
+              </button>
+            </form>
           </div>
 
-          {showSuggestions && (
-            <div className={styles.suggestionsBlock}>
-              <span>AI Suggestions</span>
-              <div className={styles.suggestionChips}>
-                {data.suggestions.map((suggestion) => (
-                  <button
-                    type="button"
-                    key={suggestion}
-                    disabled={isResponding}
-                    onClick={() => addUserAnswer(suggestion)}
-                  >
-                    {suggestion}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <form className={styles.answerBar} onSubmit={handleSubmitAnswer}>
-            <input
-              disabled={isResponding}
-              value={answer}
-              onChange={(event) => setAnswer(event.target.value)}
-              placeholder="Type your answer here..."
-            />
-            <button type="submit" aria-label="Send answer" disabled={!canSend}>
-              <Send size={18} strokeWidth={2.6} />
-            </button>
-          </form>
-        </div>
-
-        <GeneratedPlanPreview
-          aiLogs={data.aiLogs}
-          modules={data.recommendedModules}
-          onCreatePlan={() => navigate("/learning-plan")}
-        />
-      </section>
-    </main>
+          <GeneratedPlanPreview
+            aiLogs={data.aiLogs}
+            modules={data.recommendedModules}
+            onCreatePlan={() => navigate("/learning-plan")}
+          />
+        </section>
+      </main>
+    </MainLayout>
   );
 }

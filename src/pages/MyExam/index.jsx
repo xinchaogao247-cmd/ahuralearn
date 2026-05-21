@@ -1,5 +1,6 @@
 import styles from "./MyExam.module.css";
 
+import MainLayout from "../../layouts/MainLayout";
 import { useMyExam } from "./hooks/useMyExam";
 
 import ExamResultCard from "./components/ExamResultCard";
@@ -10,33 +11,45 @@ export default function MyExam() {
   const { data, loading, error, empty } = useMyExam();
 
   if (loading) {
-    return <main className={`${styles.myExamPage} ${styles.pageStatus}`}>Loading...</main>;
+    return (
+      <MainLayout>
+        <main className={`${styles.myExamPage} ${styles.pageStatus}`}>
+          Loading...
+        </main>
+      </MainLayout>
+    );
   }
 
   if (error) {
     return (
-      <main className={`${styles.myExamPage} ${styles.pageStatus}`}>
-        Failed to load exam data.
-      </main>
+      <MainLayout>
+        <main className={`${styles.myExamPage} ${styles.pageStatus}`}>
+          Failed to load exam data.
+        </main>
+      </MainLayout>
     );
   }
 
   if (empty) {
     return (
-      <main className={`${styles.myExamPage} ${styles.pageStatus}`}>
-        No exam data found.
-      </main>
+      <MainLayout>
+        <main className={`${styles.myExamPage} ${styles.pageStatus}`}>
+          No exam data found.
+        </main>
+      </MainLayout>
     );
   }
 
   return (
-    <main className={styles.myExamPage}>
-      <ExamResultCard result={data.result} />
+    <MainLayout>
+      <main className={styles.myExamPage}>
+        <ExamResultCard result={data.result} />
 
-      <section className={styles.examGrid}>
-        <SubjectBreakdown subjects={data.subjects} />
-        <RecentExams exams={data.recentExams} />
-      </section>
-    </main>
+        <section className={styles.examGrid}>
+          <SubjectBreakdown subjects={data.subjects} />
+          <RecentExams exams={data.recentExams} />
+        </section>
+      </main>
+    </MainLayout>
   );
 }

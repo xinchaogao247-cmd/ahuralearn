@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import ContinueLearning from "./components/ContinueLearning";
 import CourseHeader from "./components/CourseHeader";
 import CourseStats from "./components/CourseStats";
+import MainLayout from "../../layouts/MainLayout";
 import { useWeeklyGoals } from "../../shared/goals/hooks/useWeeklyGoals";
 import { useCourses } from "./hooks/useCourses";
 import styles from "./Courses.module.css";
@@ -39,35 +40,49 @@ export default function Courses() {
   }, [activeFilter, coursesData]);
 
   if (loading) {
-    return <main className={styles.coursesPage}>Loading...</main>;
+    return (
+      <MainLayout>
+        <main className={styles.coursesPage}>Loading...</main>
+      </MainLayout>
+    );
   }
 
   if (error) {
-    return <main className={styles.coursesPage}>Failed to load data</main>;
+    return (
+      <MainLayout>
+        <main className={styles.coursesPage}>Failed to load data</main>
+      </MainLayout>
+    );
   }
 
   if (empty) {
-    return <main className={styles.coursesPage}>No courses found</main>;
+    return (
+      <MainLayout>
+        <main className={styles.coursesPage}>No courses found</main>
+      </MainLayout>
+    );
   }
 
   return (
-    <main className={styles.coursesPage}>
-      <CourseHeader
-        summary={coursesData.summary}
-        filters={coursesData.filters}
-        activeFilter={activeFilter}
-        onFilterChange={setActiveFilter}
-      />
-
-      <div className={styles.coursesLayout}>
-        <ContinueLearning courses={filteredCourses} />
-        <CourseStats
-          categories={coursesData.categories}
-          goal={coursesData.goal}
-          goals={activeGoals}
-          onDeleteGoal={deleteGoal}
+    <MainLayout>
+      <main className={styles.coursesPage}>
+        <CourseHeader
+          summary={coursesData.summary}
+          filters={coursesData.filters}
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
         />
-      </div>
-    </main>
+
+        <div className={styles.coursesLayout}>
+          <ContinueLearning courses={filteredCourses} />
+          <CourseStats
+            categories={coursesData.categories}
+            goal={coursesData.goal}
+            goals={activeGoals}
+            onDeleteGoal={deleteGoal}
+          />
+        </div>
+      </main>
+    </MainLayout>
   );
 }

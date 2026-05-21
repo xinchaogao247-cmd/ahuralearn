@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import Topbar from "../components/layout/Topbar";
 import Navbar from "../components/layout/Navbar";
@@ -6,7 +6,7 @@ import Footer from "../components/layout/Footer";
 
 import styles from "./MainLayout.module.css";
 
-export default function MainLayout() {
+export default function MainLayout({ children }) {
   const location = useLocation();
   const hideSubNav = location.pathname === "/ai-study-plan";
 
@@ -16,9 +16,7 @@ export default function MainLayout() {
 
       {!hideSubNav && <Navbar />}
 
-      <main className={styles.mainContent}>
-        <Outlet />
-      </main>
+      <div className={styles.mainContent}>{children}</div>
 
       <Footer />
     </div>

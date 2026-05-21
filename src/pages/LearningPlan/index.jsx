@@ -1,5 +1,6 @@
 import LearningSummary from "./components/LearningSummary";
 import StudyStats from "./components/StudyStats";
+import MainLayout from "../../layouts/MainLayout";
 import { useLearningProgress } from "../../shared/progress/hooks/useLearningProgress";
 import { useLearningPlan } from "./hooks/useLearningPlan";
 import styles from "./LearningPlan.module.css";
@@ -22,21 +23,35 @@ export default function LearningPlan() {
   const empty = learningPlanEmpty || !progress;
 
   if (loading) {
-    return <main className={styles.learningPage}>Loading...</main>;
+    return (
+      <MainLayout>
+        <main className={styles.learningPage}>Loading...</main>
+      </MainLayout>
+    );
   }
 
   if (error) {
-    return <main className={styles.learningPage}>Failed to load data</main>;
+    return (
+      <MainLayout>
+        <main className={styles.learningPage}>Failed to load data</main>
+      </MainLayout>
+    );
   }
 
   if (empty) {
-    return <main className={styles.learningPage}>No learning tasks found</main>;
+    return (
+      <MainLayout>
+        <main className={styles.learningPage}>No learning tasks found</main>
+      </MainLayout>
+    );
   }
 
   return (
-    <main className={styles.learningPage}>
-      <LearningSummary progress={progress} />
-      <StudyStats planner={learningPlanData.planner} />
-    </main>
+    <MainLayout>
+      <main className={styles.learningPage}>
+        <LearningSummary progress={progress} />
+        <StudyStats planner={learningPlanData.planner} />
+      </main>
+    </MainLayout>
   );
 }

@@ -1,5 +1,6 @@
 import AchievementSummary from "./components/AchievementSummary";
 import WeeklyGoals from "./components/WeeklyGoals";
+import MainLayout from "../../layouts/MainLayout";
 import { useWeeklyGoals } from "../../shared/goals/hooks/useWeeklyGoals";
 import { useAchievements } from "./hooks/useAchievements";
 import styles from "./Achievements.module.css";
@@ -25,22 +26,40 @@ function Achievements() {
   const empty = achievementsEmpty && achievedGoals.length === 0;
 
   if (loading) {
-    return <main className={styles.achievementsPage}>Loading achievements...</main>;
+    return (
+      <MainLayout>
+        <main className={styles.achievementsPage}>Loading achievements...</main>
+      </MainLayout>
+    );
   }
 
   if (error) {
-    return <main className={styles.achievementsPage}>Failed to load achievements</main>;
+    return (
+      <MainLayout>
+        <main className={styles.achievementsPage}>Failed to load achievements</main>
+      </MainLayout>
+    );
   }
 
   if (empty) {
-    return <main className={styles.achievementsPage}>No achievements yet</main>;
+    return (
+      <MainLayout>
+        <main className={styles.achievementsPage}>No achievements yet</main>
+      </MainLayout>
+    );
   }
 
   return (
-    <main className={styles.achievementsPage}>
-      <AchievementSummary summary={data.summary} trophy={data.trophy} />
-      <WeeklyGoals goals={goals} onAddGoal={addGoal} onDeleteGoal={deleteGoal} />
-    </main>
+    <MainLayout>
+      <main className={styles.achievementsPage}>
+        <AchievementSummary summary={data.summary} trophy={data.trophy} />
+        <WeeklyGoals
+          goals={goals}
+          onAddGoal={addGoal}
+          onDeleteGoal={deleteGoal}
+        />
+      </main>
+    </MainLayout>
   );
 }
 

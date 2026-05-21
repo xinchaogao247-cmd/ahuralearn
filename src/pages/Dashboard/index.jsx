@@ -1,5 +1,6 @@
 import DashboardStats from "./components/DashboardStats";
 import LearningCard from "./components/LearningCard";
+import MainLayout from "../../layouts/MainLayout";
 import { useLearningProgress } from "../../shared/progress/hooks/useLearningProgress";
 import { useDashboard } from "./hooks/useDashboard";
 import styles from "./Dashboard.module.css";
@@ -22,29 +23,43 @@ export default function Dashboard() {
   const empty = dashboardEmpty || !progress;
 
   if (loading) {
-    return <main className={styles.dashboard}>Loading...</main>;
+    return (
+      <MainLayout>
+        <main className={styles.dashboard}>Loading...</main>
+      </MainLayout>
+    );
   }
 
   if (error) {
-    return <main className={styles.dashboard}>Failed to load data</main>;
+    return (
+      <MainLayout>
+        <main className={styles.dashboard}>Failed to load data</main>
+      </MainLayout>
+    );
   }
 
   if (empty) {
-    return <main className={styles.dashboard}>No dashboard data found</main>;
+    return (
+      <MainLayout>
+        <main className={styles.dashboard}>No dashboard data found</main>
+      </MainLayout>
+    );
   }
 
   return (
-    <main className={styles.dashboard}>
-      <section className={styles.leftSection}>
-        <LearningCard progress={progress} />
-      </section>
+    <MainLayout>
+      <main className={styles.dashboard}>
+        <section className={styles.leftSection}>
+          <LearningCard progress={progress} />
+        </section>
 
-      <section className={styles.rightSection}>
-        <DashboardStats
-          courses={dashboardData.ongoingCourses}
-          stats={dashboardData.achievementStats}
-        />
-      </section>
-    </main>
+        <section className={styles.rightSection}>
+          <DashboardStats
+            courses={dashboardData.ongoingCourses}
+            stats={dashboardData.achievementStats}
+          />
+        </section>
+      </main>
+    </MainLayout>
   );
 }
