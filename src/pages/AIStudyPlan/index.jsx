@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Bot, Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import GeneratedPlanPreview from "./components/GeneratedPlanPreview";
-import MainLayout from "../../layouts/MainLayout";
+import GeneratedPlanPreview from "../../components/aiStudyPlan/GeneratedPlanPreview";
+import PageShell from "../../components/common/PageShell";
 import { useAIStudyPlan } from "./hooks/useAIStudyPlan";
 import styles from "./AIStudyPlan.module.css";
 
@@ -29,31 +29,31 @@ export default function AIStudyPlan() {
 
   if (loading) {
     return (
-      <MainLayout>
+      <PageShell showSubNav={false}>
         <main className={`${styles.aiStudyPlanPage} ${styles.pageStatus}`}>
           Loading AI study plan...
         </main>
-      </MainLayout>
+      </PageShell>
     );
   }
 
   if (error) {
     return (
-      <MainLayout>
+      <PageShell showSubNav={false}>
         <main className={`${styles.aiStudyPlanPage} ${styles.pageStatus}`}>
           Failed to load AI study plan
         </main>
-      </MainLayout>
+      </PageShell>
     );
   }
 
   if (empty) {
     return (
-      <MainLayout>
+      <PageShell showSubNav={false}>
         <main className={`${styles.aiStudyPlanPage} ${styles.pageStatus}`}>
           No generated plan found
         </main>
-      </MainLayout>
+      </PageShell>
     );
   }
 
@@ -115,7 +115,7 @@ export default function AIStudyPlan() {
   const canSend = answer.trim().length > 0 && !isResponding;
 
   return (
-    <MainLayout>
+    <PageShell showSubNav={false}>
       <main className={styles.aiStudyPlanPage}>
         <section className={styles.pageHeader}>
           <h1>Build Your Study Plan</h1>
@@ -203,6 +203,6 @@ export default function AIStudyPlan() {
           />
         </section>
       </main>
-    </MainLayout>
+    </PageShell>
   );
 }

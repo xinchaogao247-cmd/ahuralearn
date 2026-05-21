@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { getCoursesPageData } from "../api/coursesApi";
+import { getCoursesPageData } from "../../../api/course/coursesApi";
 
 export function useCourses() {
   const [data, setData] = useState(null);

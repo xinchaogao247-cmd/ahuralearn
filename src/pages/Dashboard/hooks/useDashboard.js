@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { getDashboardData } from "../api/dashboardApi";
+import { getDashboardData } from "../../../api/learning/dashboardApi";
 
 export function useDashboard() {
   const [data, setData] = useState(null);

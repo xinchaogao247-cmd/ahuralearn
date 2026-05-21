@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { getAchievementsData } from "../api/achievementsApi";
+import { getAchievementsData } from "../../../api/user/achievementsApi";
 
 export function useAchievements() {
   const [data, setData] = useState(null);
@@ -38,7 +38,12 @@ export function useAchievements() {
     };
   }, []);
 
-  const empty = !loading && !error && (!data || (data.badges?.length ?? 0) === 0);
+  const empty =
+    !loading &&
+    !error &&
+    (!data ||
+      !data.summary ||
+      (data.summary.totalAchievements ?? 0) === 0);
 
   return {
     data,

@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
 
-import ContinueLearning from "./components/ContinueLearning";
-import CourseHeader from "./components/CourseHeader";
-import CourseStats from "./components/CourseStats";
-import MainLayout from "../../layouts/MainLayout";
-import { useWeeklyGoals } from "../../shared/goals/hooks/useWeeklyGoals";
+import ContinueLearning from "../../components/courses/ContinueLearning";
+import CourseHeader from "../../components/courses/CourseHeader";
+import CourseStats from "../../components/courses/CourseStats";
+import PageShell from "../../components/common/PageShell";
+import { useWeeklyGoals } from "../../shared/goals/goalsApi";
 import { useCourses } from "./hooks/useCourses";
 import styles from "./Courses.module.css";
 
@@ -41,30 +41,30 @@ export default function Courses() {
 
   if (loading) {
     return (
-      <MainLayout>
+      <PageShell>
         <main className={styles.coursesPage}>Loading...</main>
-      </MainLayout>
+      </PageShell>
     );
   }
 
   if (error) {
     return (
-      <MainLayout>
+      <PageShell>
         <main className={styles.coursesPage}>Failed to load data</main>
-      </MainLayout>
+      </PageShell>
     );
   }
 
   if (empty) {
     return (
-      <MainLayout>
+      <PageShell>
         <main className={styles.coursesPage}>No courses found</main>
-      </MainLayout>
+      </PageShell>
     );
   }
 
   return (
-    <MainLayout>
+    <PageShell>
       <main className={styles.coursesPage}>
         <CourseHeader
           summary={coursesData.summary}
@@ -83,6 +83,6 @@ export default function Courses() {
           />
         </div>
       </main>
-    </MainLayout>
+    </PageShell>
   );
 }

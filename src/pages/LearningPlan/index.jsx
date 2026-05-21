@@ -1,7 +1,7 @@
-import LearningSummary from "./components/LearningSummary";
-import StudyStats from "./components/StudyStats";
-import MainLayout from "../../layouts/MainLayout";
-import { useLearningProgress } from "../../shared/progress/hooks/useLearningProgress";
+import LearningSummary from "../../components/learningPlan/LearningSummary";
+import StudyStats from "../../components/learningPlan/StudyStats";
+import PageShell from "../../components/common/PageShell";
+import { useLearningProgress } from "../../shared/progress/progressApi";
 import { useLearningPlan } from "./hooks/useLearningPlan";
 import styles from "./LearningPlan.module.css";
 
@@ -24,34 +24,34 @@ export default function LearningPlan() {
 
   if (loading) {
     return (
-      <MainLayout>
+      <PageShell>
         <main className={styles.learningPage}>Loading...</main>
-      </MainLayout>
+      </PageShell>
     );
   }
 
   if (error) {
     return (
-      <MainLayout>
+      <PageShell>
         <main className={styles.learningPage}>Failed to load data</main>
-      </MainLayout>
+      </PageShell>
     );
   }
 
   if (empty) {
     return (
-      <MainLayout>
+      <PageShell>
         <main className={styles.learningPage}>No learning tasks found</main>
-      </MainLayout>
+      </PageShell>
     );
   }
 
   return (
-    <MainLayout>
+    <PageShell>
       <main className={styles.learningPage}>
         <LearningSummary progress={progress} />
         <StudyStats planner={learningPlanData.planner} />
       </main>
-    </MainLayout>
+    </PageShell>
   );
 }

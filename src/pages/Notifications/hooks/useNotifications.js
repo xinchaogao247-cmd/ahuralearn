@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import {
   acknowledgeNotification,
   getNotificationsData,
-} from "../api/notificationsApi";
+} from "../../../api/notification/notificationsApi";
 
 export function useNotifications() {
   const [data, setData] = useState(null);

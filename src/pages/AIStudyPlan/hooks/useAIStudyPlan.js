@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { getAIStudyPlanData } from "../api/aiStudyPlanApi";
+import { getAIStudyPlanData } from "../../../api/ai/aiStudyPlanApi";
 
 export function useAIStudyPlan() {
   const [data, setData] = useState(null);

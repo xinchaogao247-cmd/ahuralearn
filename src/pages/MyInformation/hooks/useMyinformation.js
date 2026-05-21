@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { getMyInformationPageData } from "../api/myInformationApi";
+import { getMyInformationPageData } from "../../../api/user/myInformationApi";
 
 export function useMyInformation() {
   const [data, setData] = useState(null);

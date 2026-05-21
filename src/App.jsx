@@ -1,13 +1,13 @@
 import { Route, Routes } from "react-router-dom";
 
-import AIStudyPlan from "./pages/AIStudyPlan";
-import Dashboard from "./pages/Dashboard";
-import Courses from "./pages/Courses";
-import LearningPlan from "./pages/LearningPlan";
-import Achievements from "./pages/Achievements";
-import MyExam from "./pages/MyExam";
-import MyInformation from "./pages/MyInformation";
-import Notifications from "./pages/Notifications";
+import AIStudyPlan from "./pages/aiStudyPlan";
+import Dashboard from "./pages/dashboard";
+import Courses from "./pages/courses";
+import LearningPlan from "./pages/learningPlan";
+import Achievements from "./pages/achievements";
+import MyExam from "./pages/myExam";
+import MyInformation from "./pages/myInformation";
+import Notifications from "./pages/notifications";
 
 function App() {
   return (

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { getLearningPlanData } from "../api/learningPlanApi";
+import { getLearningPlanData } from "../../../api/learning/learningPlanApi";
 
 export function useLearningPlan() {
   const [data, setData] = useState(null);

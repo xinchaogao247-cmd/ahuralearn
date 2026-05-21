@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { getMyExamPageData } from "../api/myExamApi";
+import { getMyExamPageData } from "../../../api/exam/myExamApi";
 
 export function useMyExam() {
   const [data, setData] = useState(null);

@@ -1,47 +1,47 @@
 import styles from "./MyInformation.module.css";
 
-import MainLayout from "../../layouts/MainLayout";
+import PageShell from "../../components/common/PageShell";
 import { useMyInformation } from "./hooks/useMyInformation";
 
-import ProfileCard from "./components/ProfileCard";
-import LearningStats from "./components/LearningStats";
-import LearningProfile from "./components/LearningProfile";
+import ProfileCard from "../../components/myInformation/ProfileCard";
+import LearningStats from "../../components/myInformation/LearningStats";
+import LearningProfile from "../../components/myInformation/LearningProfile";
 
 export default function MyInformation() {
   const { data, loading, error, empty } = useMyInformation();
 
   if (loading) {
     return (
-      <MainLayout>
+      <PageShell>
         <main className={`${styles.myInformationPage} ${styles.pageStatus}`}>
           Loading...
         </main>
-      </MainLayout>
+      </PageShell>
     );
   }
 
   if (error) {
     return (
-      <MainLayout>
+      <PageShell>
         <main className={`${styles.myInformationPage} ${styles.pageStatus}`}>
           Failed to load profile data.
         </main>
-      </MainLayout>
+      </PageShell>
     );
   }
 
   if (empty) {
     return (
-      <MainLayout>
+      <PageShell>
         <main className={`${styles.myInformationPage} ${styles.pageStatus}`}>
           No profile data found.
         </main>
-      </MainLayout>
+      </PageShell>
     );
   }
 
   return (
-    <MainLayout>
+    <PageShell>
       <main className={styles.myInformationPage}>
         <ProfileCard profile={data.profile} />
 
@@ -49,6 +49,6 @@ export default function MyInformation() {
 
         <LearningProfile learningProfile={data.learningProfile} />
       </main>
-    </MainLayout>
+    </PageShell>
   );
 }

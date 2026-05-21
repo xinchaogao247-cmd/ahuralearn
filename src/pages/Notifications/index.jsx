@@ -1,5 +1,5 @@
-import ExpiringPlanCard from "./components/ExpiringPlanCard";
-import MainLayout from "../../layouts/MainLayout";
+import ExpiringPlanCard from "../../components/notifications/ExpiringPlanCard";
+import PageShell from "../../components/common/PageShell";
 import { useNotifications } from "./hooks/useNotifications";
 import styles from "./Notifications.module.css";
 
@@ -9,36 +9,36 @@ export default function Notifications() {
 
   if (loading) {
     return (
-      <MainLayout>
+      <PageShell>
         <main className={`${styles.notificationsPage} ${styles.pageStatus}`}>
           Loading notifications...
         </main>
-      </MainLayout>
+      </PageShell>
     );
   }
 
   if (error) {
     return (
-      <MainLayout>
+      <PageShell>
         <main className={`${styles.notificationsPage} ${styles.pageStatus}`}>
           Failed to load notifications
         </main>
-      </MainLayout>
+      </PageShell>
     );
   }
 
   if (empty) {
     return (
-      <MainLayout>
+      <PageShell>
         <main className={`${styles.notificationsPage} ${styles.pageStatus}`}>
           No expiring study plans
         </main>
-      </MainLayout>
+      </PageShell>
     );
   }
 
   return (
-    <MainLayout>
+    <PageShell>
       <main className={styles.notificationsPage}>
         <section className={styles.header}>
           <div>
@@ -59,6 +59,6 @@ export default function Notifications() {
           ))}
         </section>
       </main>
-    </MainLayout>
+    </PageShell>
   );
 }

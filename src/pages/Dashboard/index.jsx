@@ -1,7 +1,7 @@
-import DashboardStats from "./components/DashboardStats";
-import LearningCard from "./components/LearningCard";
-import MainLayout from "../../layouts/MainLayout";
-import { useLearningProgress } from "../../shared/progress/hooks/useLearningProgress";
+import DashboardStats from "../../components/dashboard/DashboardStats";
+import LearningCard from "../../components/dashboard/LearningCard";
+import PageShell from "../../components/common/PageShell";
+import { useLearningProgress } from "../../shared/progress/progressApi";
 import { useDashboard } from "./hooks/useDashboard";
 import styles from "./Dashboard.module.css";
 
@@ -24,30 +24,30 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <MainLayout>
+      <PageShell>
         <main className={styles.dashboard}>Loading...</main>
-      </MainLayout>
+      </PageShell>
     );
   }
 
   if (error) {
     return (
-      <MainLayout>
+      <PageShell>
         <main className={styles.dashboard}>Failed to load data</main>
-      </MainLayout>
+      </PageShell>
     );
   }
 
   if (empty) {
     return (
-      <MainLayout>
+      <PageShell>
         <main className={styles.dashboard}>No dashboard data found</main>
-      </MainLayout>
+      </PageShell>
     );
   }
 
   return (
-    <MainLayout>
+    <PageShell>
       <main className={styles.dashboard}>
         <section className={styles.leftSection}>
           <LearningCard progress={progress} />
@@ -60,6 +60,6 @@ export default function Dashboard() {
           />
         </section>
       </main>
-    </MainLayout>
+    </PageShell>
   );
 }
