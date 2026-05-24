@@ -115,6 +115,7 @@ export default function AIStudyPlan() {
   const canSend = answer.trim().length > 0 && !isResponding;
 
   return (
+    //隐藏二级导航栏，因为这个页面不需要展示二级导航
     <PageShell showSubNav={false}>
       <main className={styles.aiStudyPlanPage}>
         <section className={styles.pageHeader}>

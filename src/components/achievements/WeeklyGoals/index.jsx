@@ -19,10 +19,12 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
   const [formError, setFormError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
+  // 父级共享目标数据变化时，同步到本地列表，保证不同页面看到的数据一致。
   useEffect(() => {
     setLocalGoals(goals);
   }, [goals]);
 
+  // 统计本周目标完成情况，用于标题下方的进度文案。
   const goalStats = useMemo(() => {
     const achievedCount = localGoals.filter((goal) => goal.achieved).length;
 
@@ -63,6 +65,7 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
     }
 
     try {
+      // 添加目标仍通过父级 API/hook 完成，方便未来替换成真实后端。
       setIsSaving(true);
       setFormError("");
       await onAddGoal({
@@ -81,6 +84,7 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
   };
 
   const handleIncrementGoal = (goalId) => {
+    // 本地即时更新让交互更快；达到 total 时自动标记为完成。
     setLocalGoals((currentGoals) =>
       currentGoals.map((goal) => {
         if (goal.id !== goalId || goal.achieved) {
@@ -116,6 +120,7 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
   };
 
   const handleDeleteGoal = async (goalId) => {
+    // 先从界面移除，再通知共享目标层删除数据。
     setLocalGoals((currentGoals) =>
       currentGoals.filter((goal) => goal.id !== goalId)
     );

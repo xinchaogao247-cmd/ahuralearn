@@ -4,6 +4,7 @@ import ProgressBar from "../ProgressBar";
 import styles from "./GoalItem.module.css";
 
 export default function GoalItem({ goal, onComplete, onDelete, onIncrement }) {
+  // 根据当前进度实时计算完成百分比，避免依赖额外字段。
   const progress =
     goal.total > 0 ? Math.round((goal.current / goal.total) * 100) : 0;
   const isAchieved = goal.achieved || progress >= 100;
@@ -41,6 +42,7 @@ export default function GoalItem({ goal, onComplete, onDelete, onIncrement }) {
           <div className={styles.goalActions}>
             {!isAchieved && (
               <>
+                {/* +1 用于快速记录小步进展，Complete 用于直接完成整个目标。 */}
                 <button type="button" onClick={() => onIncrement(goal.id)}>
                   +1
                 </button>
