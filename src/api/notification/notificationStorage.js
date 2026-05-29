@@ -7,6 +7,7 @@ import { expiringPlansMock } from "./notificationsMock";
  * 存储用户已经查看过的通知。
  */
 const acknowledgedKey = "acknowledgedExpiringPlanIds";
+const deletedKey = "deletedExpiringPlanIds";
 
 /**
  * 自定义通知更新事件名称。
@@ -69,6 +70,39 @@ export function getAcknowledgedPlanIds() {
   }
 }
 
+export function getDeletedPlanIds() {
+  const storedIds = localStorage.getItem(deletedKey);
+
+  if (!storedIds) {
+    return [];
+  }
+
+  try {
+    return JSON.parse(storedIds);
+  } catch (error) {
+    console.warn(
+      "Failed to parse deleted notifications",
+      error
+    );
+
+    return [];
+  }
+}
+
+export function getVisibleExpiringPlans(
+  plans = expiringPlansMock
+) {
+  const acknowledgedIds = getAcknowledgedPlanIds();
+  const deletedIds = getDeletedPlanIds();
+
+  return plans
+    .filter((plan) => !deletedIds.includes(plan.id))
+    .map((plan) => ({
+      ...plan,
+      isAcknowledged: acknowledgedIds.includes(plan.id),
+    }));
+}
+
 /**
  * 获取未读的学习计划通知。
  *
@@ -86,6 +120,7 @@ export function getUnreadExpiringPlans(
    * 获取已读通知 ID 列表。
    */
   const acknowledgedIds = getAcknowledgedPlanIds();
+  const deletedIds = getDeletedPlanIds();
 
   /**
    * filter:
@@ -96,7 +131,9 @@ export function getUnreadExpiringPlans(
    * acknowledgedIds 中。
    */
   return plans.filter(
-    (plan) => !acknowledgedIds.includes(plan.id)
+    (plan) =>
+      !acknowledgedIds.includes(plan.id) &&
+      !deletedIds.includes(plan.id)
   );
 }
 
@@ -161,6 +198,24 @@ export function acknowledgeExpiringPlan(planId) {
    * - TopNav 红点同步更新
    * - Notification 页面同步刷新
    */
+  window.dispatchEvent(
+    new Event(notificationsUpdatedEvent)
+  );
+}
+
+export function deleteExpiringPlan(planId) {
+  const deletedIds = getDeletedPlanIds();
+
+  if (!deletedIds.includes(planId)) {
+    localStorage.setItem(
+      deletedKey,
+      JSON.stringify([
+        ...deletedIds,
+        planId,
+      ])
+    );
+  }
+
   window.dispatchEvent(
     new Event(notificationsUpdatedEvent)
   );

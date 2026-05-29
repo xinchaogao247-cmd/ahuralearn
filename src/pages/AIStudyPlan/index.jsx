@@ -13,7 +13,9 @@ export default function AIStudyPlan() {
   const [answer, setAnswer] = useState("");
   const [messages, setMessages] = useState([]);
   const [isResponding, setIsResponding] = useState(false);
+  const [previewHeight, setPreviewHeight] = useState(null);
   const responseTimerRef = useRef(null);
+  const previewCardRef = useRef(null);
 
   useEffect(() => {
     if (data?.chat?.[0]) {
@@ -26,6 +28,27 @@ export default function AIStudyPlan() {
       window.clearTimeout(responseTimerRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    const previewCard = previewCardRef.current;
+
+    if (!previewCard) {
+      return undefined;
+    }
+
+    const updatePreviewHeight = () => {
+      setPreviewHeight(previewCard.getBoundingClientRect().height);
+    };
+
+    updatePreviewHeight();
+
+    const resizeObserver = new ResizeObserver(updatePreviewHeight);
+    resizeObserver.observe(previewCard);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [data]);
 
   if (loading) {
     return (
@@ -124,7 +147,14 @@ export default function AIStudyPlan() {
         </section>
 
         <section className={styles.builderLayout}>
-          <div className={styles.chatCard}>
+          <div
+            className={styles.chatCard}
+            style={
+              previewHeight
+                ? { "--preview-card-height": `${previewHeight}px` }
+                : undefined
+            }
+          >
             <div className={styles.chatList}>
               {displayedMessages.map((message) => (
                 <div
@@ -197,11 +227,13 @@ export default function AIStudyPlan() {
             </form>
           </div>
 
-          <GeneratedPlanPreview
-            aiLogs={data.aiLogs}
-            modules={data.recommendedModules}
-            onCreatePlan={() => navigate("/learning-plan")}
-          />
+          <div ref={previewCardRef}>
+            <GeneratedPlanPreview
+              aiLogs={data.aiLogs}
+              modules={data.recommendedModules}
+              onCreatePlan={() => navigate("/learning-plan")}
+            />
+          </div>
         </section>
       </main>
     </PageShell>

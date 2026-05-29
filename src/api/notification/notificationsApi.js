@@ -3,7 +3,8 @@ import { notificationsMock } from "./notificationsMock";
 
 import {
   acknowledgeExpiringPlan,
-  getUnreadExpiringPlans,
+  deleteExpiringPlan,
+  getVisibleExpiringPlans,
 } from "./notificationStorage";
 
 /**
@@ -148,7 +149,7 @@ export async function getNotificationsData() {
            * 2. 对通知进行排序
            */
           expiringPlans: sortNotifications(
-            getUnreadExpiringPlans(
+            getVisibleExpiringPlans(
               notificationsMock.expiringPlans
             )
           ),
@@ -237,5 +238,19 @@ export async function acknowledgeNotification(
    */
   return request.patch(
     `/notifications/${planId}/acknowledge`
+  );
+}
+
+export async function deleteNotification(planId) {
+  if (useMockApi) {
+    deleteExpiringPlan(planId);
+
+    return {
+      id: planId,
+    };
+  }
+
+  return request.delete(
+    `/notifications/${planId}`
   );
 }
