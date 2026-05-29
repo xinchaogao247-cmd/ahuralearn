@@ -11,7 +11,7 @@ export default function Footer() {
     <footer className={styles.footerContainer}>
       {/* 左侧：Logo 和平台宣传语 */}
       <div className={styles.footerLeft}>
-        <Link to="/homepage" className={styles.footerLogoArea}>
+        <Link to="/dashboard" className={styles.footerLogoArea}>
           <h2 className={styles.footerLogoTitle}>AhuraLearn</h2>
         </Link>
         <p className={styles.footerDescription}>

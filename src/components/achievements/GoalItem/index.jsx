@@ -64,7 +64,7 @@ export default function GoalItem({
             >
               <Pencil size={15} strokeWidth={2.4} />
             </button>
-            <button type="button" onClick={() => onDelete(goal.id)}>
+            <button type="button" onClick={() => onDelete(goal)}>
               <Trash2 size={15} strokeWidth={2.4} />
             </button>
           </div>

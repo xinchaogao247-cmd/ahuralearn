@@ -45,8 +45,8 @@
 .chatCard {
   display: flex;
   flex-direction: column;
-  max-height: var(--preview-card-height, none);
-  min-height: 0;
+  height: var(--preview-card-height, 560px);
+  min-height: 520px;
   padding: 24px;
   border: 1px solid #dbe3ef;
   border-radius: 18px;
@@ -234,6 +234,7 @@
   }
 
   .chatCard {
-    max-height: none;
+    height: auto;
+    min-height: 520px;
   }
 }

@@ -85,7 +85,7 @@ export default function TopNav() {
         </div>
 
         <div className={styles.navHomepage}>
-          <Link to="/homepage" className={styles.navLinkItem}>Homepage</Link>
+          <Link to="/dashboard" className={styles.navLinkItem}>Homepage</Link>
         </div>
       </div>
 
@@ -104,7 +104,7 @@ export default function TopNav() {
       <div className={styles.navRight}>
         <div className={styles.navExtraLinks}>
           <Link to="/" className={`${styles.navLinkItem} ${styles.navLearnWithAI}`}>Learn with AI</Link>
-          <Link to="/" className={styles.navLinkItem}>My Profile</Link>
+          <Link to="/dashboard" className={styles.navLinkItem}>My Profile</Link>
         </div>
 
         <div className={styles.navRightIcons}>

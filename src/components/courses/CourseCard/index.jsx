@@ -1,11 +1,27 @@
+import { Link } from "react-router-dom";
+
 import CourseProgress from "../CourseProgress";
 import styles from "./CourseCard.module.css";
 
 const cx = (...names) => names.map((name) => styles[name]).filter(Boolean).join(" ");
 
+function getCourseDetailPath(course) {
+  return `/courses/${course.courseId ?? course.id}`;
+}
+
+function getCourseGamePath(course) {
+  return `/courses/${course.courseId ?? course.id}/game`;
+}
+
 export default function CourseCard({ course }) {
   return (
     <div className={`${styles.card} course-card-large`}>
+      <Link
+        to={getCourseDetailPath(course)}
+        className={styles.cardLink}
+        aria-label={`View details for ${course.title}`}
+      />
+
       <div
         className={`${styles.image} course-image`}
         style={{ backgroundImage: `url(${course.image})` }}
@@ -28,9 +44,13 @@ export default function CourseCard({ course }) {
             <span>{course.reviews}</span>
           </div>
 
-          <div className={`${styles.actionIcon} course-action-icon`}>
+          <Link
+            to={getCourseGamePath(course)}
+            className={`${styles.actionIcon} course-action-icon`}
+            aria-label={`Open game for ${course.title}`}
+          >
             <img src={course.actionIcon} alt="" className={`${styles.gameIcon} game-icon`} />
-          </div>
+          </Link>
         </div>
 
         <CourseProgress

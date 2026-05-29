@@ -1,6 +1,6 @@
 import DashboardStats from "../../components/dashboard/DashboardStats";
 import LearningCard from "../../components/dashboard/LearningCard";
-import PageShell from "../../components/common/PageShell";
+import PageShell from "../../components/profileLayout/PageShell";
 import { useLearningProgress } from "../../shared/progress/progressApi";
 import { useDashboard } from "./hooks/useDashboard";
 import styles from "./Dashboard.module.css";

@@ -56,7 +56,7 @@ export default function TaskCard({ task, onDelete, onEdit, onToggleComplete }) {
           <button type="button" onClick={() => onEdit(task)}>
             Edit
           </button>
-          <button type="button" onClick={() => onDelete(task.id)}>
+          <button type="button" onClick={() => onDelete(task)}>
             Delete
           </button>
         </div>

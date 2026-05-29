@@ -3,7 +3,8 @@ import { Bot, Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import GeneratedPlanPreview from "../../components/aiStudyPlan/GeneratedPlanPreview";
-import PageShell from "../../components/common/PageShell";
+import PageShell from "../../components/profileLayout/PageShell";
+import { saveGeneratedAIStudyPlan } from "../../api/learning/learningPlanApi";
 import { useAIStudyPlan } from "./hooks/useAIStudyPlan";
 import styles from "./AIStudyPlan.module.css";
 
@@ -17,6 +18,7 @@ export default function AIStudyPlan() {
   const messageIdRef = useRef(0);
   const responseTimerRef = useRef(null);
   const previewCardRef = useRef(null);
+  const chatListRef = useRef(null);
 
   useEffect(() => {
     return () => {
@@ -44,6 +46,34 @@ export default function AIStudyPlan() {
       resizeObserver.disconnect();
     };
   }, [data]);
+
+  const displayedMessages = data
+    ? messages.length > 0
+      ? messages
+      : [data.chat[0]]
+    : [];
+  const aiReplies = data
+    ? data.chat.filter((message) => message.role === "ai").slice(1)
+    : [];
+  const userMessageCount = displayedMessages.filter(
+    (message) => message.role === "user"
+  ).length;
+  const showSuggestions = userMessageCount > 0;
+
+  useEffect(() => {
+    const chatList = chatListRef.current;
+
+    if (!chatList) {
+      return;
+    }
+
+    window.requestAnimationFrame(() => {
+      chatList.scrollTo({
+        top: chatList.scrollHeight,
+        behavior: "smooth",
+      });
+    });
+  }, [displayedMessages.length, isResponding]);
 
   if (loading) {
     return (
@@ -74,13 +104,6 @@ export default function AIStudyPlan() {
       </PageShell>
     );
   }
-
-  const displayedMessages = messages.length > 0 ? messages : [data.chat[0]];
-  const aiReplies = data.chat.filter((message) => message.role === "ai").slice(1);
-  const userMessageCount = displayedMessages.filter(
-    (message) => message.role === "user"
-  ).length;
-  const showSuggestions = userMessageCount > 0;
 
   const addUserAnswer = (answerText) => {
     const text = answerText.trim();
@@ -135,6 +158,23 @@ export default function AIStudyPlan() {
     addUserAnswer(answer);
   };
 
+  const handleCreatePlan = () => {
+    const userAnswers = displayedMessages
+      .filter((message) => message.role === "user")
+      .map((message) => message.text);
+
+    saveGeneratedAIStudyPlan({
+      createdAt: new Date().toISOString(),
+      summary:
+        userAnswers.length > 0
+          ? `Generated from your AI answers: ${userAnswers.join(" / ")}`
+          : data.profile.goal,
+      modules: data.recommendedModules,
+    });
+
+    navigate("/learningPlan");
+  };
+
   const canSend = answer.trim().length > 0 && !isResponding;
 
   return (
@@ -155,7 +195,7 @@ export default function AIStudyPlan() {
                 : undefined
             }
           >
-            <div className={styles.chatList}>
+            <div className={styles.chatList} ref={chatListRef}>
               {displayedMessages.map((message) => (
                 <div
                   className={`${styles.messageRow} ${
@@ -231,7 +271,7 @@ export default function AIStudyPlan() {
             <GeneratedPlanPreview
               aiLogs={data.aiLogs}
               modules={data.recommendedModules}
-              onCreatePlan={() => navigate("/learning-plan")}
+              onCreatePlan={handleCreatePlan}
             />
           </div>
         </section>

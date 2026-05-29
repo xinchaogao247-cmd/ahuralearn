@@ -1,6 +1,6 @@
 import LearningSummary from "../../components/learningPlan/LearningSummary";
 import StudyStats from "../../components/learningPlan/StudyStats";
-import PageShell from "../../components/common/PageShell";
+import PageShell from "../../components/profileLayout/PageShell";
 import { useLearningProgress } from "../../shared/progress/progressApi";
 import { useLearningPlan } from "./hooks/useLearningPlan";
 import styles from "./LearningPlan.module.css";

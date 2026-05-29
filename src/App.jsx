@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 
-import AIStudyPlan from "./pages/aiStudyPlan";
+import AiStudyPlan from "./pages/aiStudyPlan";
 import Dashboard from "./pages/dashboard";
 import Courses from "./pages/courses";
 import LearningPlan from "./pages/learningPlan";
@@ -13,12 +13,13 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Dashboard />} />
+      <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/courses" element={<Courses />} />
-      <Route path="/learning-plan" element={<LearningPlan />} />
-      <Route path="/ai-study-plan" element={<AIStudyPlan />} />
+      <Route path="/learningPlan" element={<LearningPlan />} />
+      <Route path="/aiStudyPlan" element={<AiStudyPlan />} />
       <Route path="/achievements" element={<Achievements />} />
-      <Route path="/my-exam" element={<MyExam />} />
-      <Route path="/my-information" element={<MyInformation />} />
+      <Route path="/myExam" element={<MyExam />} />
+      <Route path="/myInformation" element={<MyInformation />} />
       <Route path="/notifications" element={<Notifications />} />
     </Routes>
   );

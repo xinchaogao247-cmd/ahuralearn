@@ -1,6 +1,6 @@
 import styles from "./MyInformation.module.css";
 
-import PageShell from "../../components/common/PageShell";
+import PageShell from "../../components/profileLayout/PageShell";
 import { useMyInformation } from "./hooks/useMyInformation";
 
 import ProfileCard from "../../components/myInformation/ProfileCard";

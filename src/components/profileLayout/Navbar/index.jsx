@@ -6,7 +6,7 @@ export default function SubNav() {
   return (
     <div className={styles.subnav}>
       <NavLink
-        to="/"
+        to="/dashboard"
         className={({ isActive }) =>
           `${styles.navLink} ${
             isActive ? styles.active : ""
@@ -28,7 +28,7 @@ export default function SubNav() {
       </NavLink>
 
       <NavLink
-        to="/learning-plan"
+        to="/learningPlan"
         className={({ isActive }) =>
           `${styles.navLink} ${
             isActive ? styles.active : ""
@@ -50,7 +50,7 @@ export default function SubNav() {
       </NavLink>
 
       <NavLink
-        to="/my-exam"
+        to="/myExam"
         className={({ isActive }) =>
           `${styles.navLink} ${
             isActive ? styles.active : ""
@@ -61,7 +61,7 @@ export default function SubNav() {
       </NavLink>
 
       <NavLink
-        to="/my-information"
+        to="/myInformation"
         className={({ isActive }) =>
           `${styles.navLink} ${
             isActive ? styles.active : ""

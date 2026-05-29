@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Plus, X } from "lucide-react";
+import { Plus, Trash2, X } from "lucide-react";
 
 import { showToast } from "../../common/toast";
 import GoalItem from "../GoalItem";
@@ -22,6 +22,7 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
   const [editingGoalId, setEditingGoalId] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [goalToDelete, setGoalToDelete] = useState(null);
 
   const goalStats = useMemo(() => {
     const achievedCount = localGoals.filter((goal) => goal.achieved).length;
@@ -223,7 +224,7 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
     );
   };
 
-  const handleDeleteGoal = async (goalId) => {
+  const deleteGoal = async (goalId) => {
     setLocalGoals((currentGoals) =>
       currentGoals.filter((goal) => goal.id !== goalId)
     );
@@ -238,6 +239,23 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
     } catch {
       showToast("Could not delete weekly goal.", "error");
     }
+  };
+
+  const handleDeleteGoal = (goal) => {
+    setGoalToDelete(goal);
+  };
+
+  const closeDeleteDialog = () => {
+    setGoalToDelete(null);
+  };
+
+  const confirmDeleteGoal = async () => {
+    if (!goalToDelete) {
+      return;
+    }
+
+    await deleteGoal(goalToDelete.id);
+    closeDeleteDialog();
   };
 
   return (
@@ -369,6 +387,42 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
           />
         ))}
       </div>
+
+      {goalToDelete && (
+        <div className={styles.dialogBackdrop} role="presentation">
+          <div
+            className={styles.confirmDialog}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-weekly-goal-title"
+          >
+            <button
+              type="button"
+              className={styles.dialogClose}
+              aria-label="Close delete confirmation"
+              onClick={closeDeleteDialog}
+            >
+              <X size={17} strokeWidth={2.4} />
+            </button>
+
+            <div className={styles.dialogIcon}>
+              <Trash2 size={22} strokeWidth={2.4} />
+            </div>
+
+            <h3 id="delete-weekly-goal-title">Delete weekly goal?</h3>
+            <p>This will remove "{goalToDelete.title}" from your weekly goals.</p>
+
+            <div className={styles.dialogActions}>
+              <button type="button" onClick={closeDeleteDialog}>
+                Cancel
+              </button>
+              <button type="button" onClick={confirmDeleteGoal}>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {shouldShowPagination && (
         <div className={styles.pagination} aria-label="Weekly goals pagination">

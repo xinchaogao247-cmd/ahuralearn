@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 
 import ExpiringPlanCard from "../../components/notifications/ExpiringPlanCard";
-import PageShell from "../../components/common/PageShell";
+import PageShell from "../../components/profileLayout/PageShell";
 import { useNotifications } from "./hooks/useNotifications";
 import styles from "./Notifications.module.css";
 

@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import ContinueLearning from "../../components/courses/ContinueLearning";
 import CourseHeader from "../../components/courses/CourseHeader";
 import CourseStats from "../../components/courses/CourseStats";
-import PageShell from "../../components/common/PageShell";
+import PageShell from "../../components/profileLayout/PageShell";
 import { useWeeklyGoals } from "../../shared/goals/goalsApi";
 import { useCourses } from "./hooks/useCourses";
 import styles from "./Courses.module.css";

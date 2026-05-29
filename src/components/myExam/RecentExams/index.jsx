@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 import styles from "./RecentExams.module.css";
 
@@ -7,6 +8,10 @@ const iconMap = {
   database: "DB",
   design: "UX",
 };
+
+function getExamDetailPath(exam) {
+  return `/myExam/${exam.id}`;
+}
 
 export default function RecentExams({ exams }) {
   const [showAll, setShowAll] = useState(false);
@@ -41,7 +46,12 @@ export default function RecentExams({ exams }) {
 
       <div className={styles.list}>
         {visibleExams.map((exam) => (
-          <div className={styles.examRow} key={exam.id}>
+          <Link
+            to={getExamDetailPath(exam)}
+            className={styles.examRow}
+            key={exam.id}
+            aria-label={`View exam details for ${exam.courseName}`}
+          >
             <div className={styles.courseCell}>
               <span className={styles.examIcon}>
                 {iconMap[exam.icon] ?? "EX"}
@@ -52,7 +62,7 @@ export default function RecentExams({ exams }) {
             <strong className={styles.score}>{exam.score}%</strong>
 
             <span className={styles.status}>{exam.status}</span>
-          </div>
+          </Link>
         ))}
       </div>
     </section>

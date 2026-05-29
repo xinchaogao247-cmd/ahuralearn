@@ -1,7 +1,7 @@
 import AchievementSummary from "../../components/achievements/AchievementSummary";
 import WeeklyGoals from "../../components/achievements/WeeklyGoals";
 
-import PageShell from "../../components/common/PageShell";
+import PageShell from "../../components/profileLayout/PageShell";
 
 import { useWeeklyGoals } from "../../shared/goals/goalsApi";
 import { useAchievements } from "./hooks/useAchievements";

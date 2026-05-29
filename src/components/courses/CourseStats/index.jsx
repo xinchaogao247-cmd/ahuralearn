@@ -1,8 +1,24 @@
-import { Trash2 } from "lucide-react";
+import { Trash2, X } from "lucide-react";
+import { useState } from "react";
 
 import styles from "./CourseStats.module.css";
 
 export default function CourseStats({ categories, goal, goals, onDeleteGoal }) {
+  const [goalToDelete, setGoalToDelete] = useState(null);
+
+  const closeDeleteDialog = () => {
+    setGoalToDelete(null);
+  };
+
+  const confirmDeleteGoal = () => {
+    if (!goalToDelete) {
+      return;
+    }
+
+    onDeleteGoal(goalToDelete.id);
+    closeDeleteDialog();
+  };
+
   return (
     <aside className={styles.sidebar}>
       <div className={styles.sidebarCard}>
@@ -33,7 +49,7 @@ export default function CourseStats({ categories, goal, goals, onDeleteGoal }) {
                   type="button"
                   className={styles.deleteButton}
                   aria-label={`Delete ${weeklyGoal.title}`}
-                  onClick={() => onDeleteGoal(weeklyGoal.id)}
+                  onClick={() => setGoalToDelete(weeklyGoal)}
                 >
                   <Trash2 size={15} strokeWidth={2.3} />
                 </button>
@@ -55,6 +71,44 @@ export default function CourseStats({ categories, goal, goals, onDeleteGoal }) {
           );
         })}
       </div>
+
+      {goalToDelete && (
+        <div className={styles.dialogBackdrop} role="presentation">
+          <div
+            className={styles.confirmDialog}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-goal-title"
+          >
+            <button
+              type="button"
+              className={styles.dialogClose}
+              aria-label="Close delete confirmation"
+              onClick={closeDeleteDialog}
+            >
+              <X size={17} strokeWidth={2.4} />
+            </button>
+
+            <div className={styles.dialogIcon}>
+              <Trash2 size={22} strokeWidth={2.4} />
+            </div>
+
+            <h3 id="delete-goal-title">Delete weekly goal?</h3>
+            <p>
+              This will remove "{goalToDelete.title}" from your weekly goals.
+            </p>
+
+            <div className={styles.dialogActions}>
+              <button type="button" onClick={closeDeleteDialog}>
+                Cancel
+              </button>
+              <button type="button" onClick={confirmDeleteGoal}>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }

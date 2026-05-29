@@ -1,6 +1,6 @@
 import styles from "./MyExam.module.css";
 
-import PageShell from "../../components/common/PageShell";
+import PageShell from "../../components/profileLayout/PageShell";
 import { useMyExam } from "./hooks/useMyExam";
 
 import ExamResultCard from "../../components/myExam/ExamResultCard";

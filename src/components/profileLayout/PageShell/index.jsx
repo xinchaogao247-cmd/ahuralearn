@@ -1,6 +1,6 @@
-import TopNav from "../TopNav";
+import Footer from "../../common/Footer";
+import TopNav from "../../common/TopNav";
 import Navbar from "../Navbar";
-import Footer from "../Footer";
 
 import styles from "./PageShell.module.css";
 

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Trash2, X } from "lucide-react";
 
 import { showToast } from "../../common/toast";
 import PlanHeader from "../PlanHeader";
@@ -76,6 +77,7 @@ export default function StudyStats({ planner }) {
   const [manualPlan, setManualPlan] = useState(emptyManualPlan);
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [taskToDelete, setTaskToDelete] = useState(null);
 
   const visibleTasks = useMemo(() => {
     const filteredTasks =
@@ -164,7 +166,7 @@ export default function StudyStats({ planner }) {
     }
   };
 
-  const handleDeleteTask = (taskId) => {
+  const deleteTask = (taskId) => {
     setTasks((currentTasks) =>
       currentTasks.filter((task) => task.id !== taskId)
     );
@@ -172,6 +174,23 @@ export default function StudyStats({ planner }) {
     if (editingTaskId === taskId) {
       resetManualPlan();
     }
+  };
+
+  const handleDeleteTask = (task) => {
+    setTaskToDelete(task);
+  };
+
+  const closeDeleteDialog = () => {
+    setTaskToDelete(null);
+  };
+
+  const confirmDeleteTask = () => {
+    if (!taskToDelete) {
+      return;
+    }
+
+    deleteTask(taskToDelete.id);
+    closeDeleteDialog();
   };
 
   const handleSubmitManualTask = (event) => {
@@ -339,6 +358,42 @@ export default function StudyStats({ planner }) {
           />
         ))}
       </div>
+
+      {taskToDelete && (
+        <div className={styles.dialogBackdrop} role="presentation">
+          <div
+            className={styles.confirmDialog}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-task-title"
+          >
+            <button
+              type="button"
+              className={styles.dialogClose}
+              aria-label="Close delete confirmation"
+              onClick={closeDeleteDialog}
+            >
+              <X size={17} strokeWidth={2.4} />
+            </button>
+
+            <div className={styles.dialogIcon}>
+              <Trash2 size={22} strokeWidth={2.4} />
+            </div>
+
+            <h3 id="delete-task-title">Delete study plan?</h3>
+            <p>This will remove "{taskToDelete.title}" from your study plan.</p>
+
+            <div className={styles.dialogActions}>
+              <button type="button" onClick={closeDeleteDialog}>
+                Cancel
+              </button>
+              <button type="button" onClick={confirmDeleteTask}>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {shouldShowPagination && (
         <div className={styles.pagination} aria-label="Study plan pagination">

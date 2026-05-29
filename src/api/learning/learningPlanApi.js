@@ -3,6 +3,7 @@ import { learningPlanMockData } from "./learningPlanMock";
 
 const useMockApi = import.meta.env.VITE_USE_MOCK_API !== "false";
 const mockDelay = 300;
+const generatedAIStudyPlanKey = "ahuralearn:generatedAIStudyPlan";
 
 function mockResponse(data) {
   return new Promise((resolve) => {
@@ -12,12 +13,98 @@ function mockResponse(data) {
   });
 }
 
-export async function getLearningPlanData() {
-  if (useMockApi) {
-    return mockResponse(learningPlanMockData);
+function getStoredGeneratedAIStudyPlan() {
+  try {
+    const storedPlan = localStorage.getItem(generatedAIStudyPlanKey);
+
+    return storedPlan ? JSON.parse(storedPlan) : null;
+  } catch (err) {
+    console.warn("Failed to read generated AI study plan", err);
+    return null;
+  }
+}
+
+function getPriority(priorityText) {
+  const normalizedPriority = priorityText?.toLowerCase() ?? "";
+
+  if (
+    normalizedPriority.includes("high") ||
+    normalizedPriority.includes("essential")
+  ) {
+    return "High";
   }
 
-  return request.get("/learning-plan");
+  if (normalizedPriority.includes("low")) {
+    return "Low";
+  }
+
+  return "Medium";
+}
+
+function createAITasks(generatedPlan) {
+  return (generatedPlan?.modules ?? []).map((module, index) => {
+    const priority = getPriority(module.priority);
+
+    return {
+      id: `ai-generated-${module.id ?? index}`,
+      title: module.title,
+      studyTime: module.duration,
+      completed: false,
+      dueText: index === 0 ? "Due Today" : index === 1 ? "Tomorrow" : "This Week",
+      priority,
+      active: index === 0,
+      note: generatedPlan.summary,
+      tags: [
+        {
+          label: "AI SUGGESTION",
+          className: "ai-tag",
+        },
+        {
+          label: `Priority ${priority}`,
+          className: "priority-tag",
+        },
+      ],
+    };
+  });
+}
+
+function mergeGeneratedAIStudyPlan(data) {
+  const generatedPlan = getStoredGeneratedAIStudyPlan();
+  const generatedTasks = createAITasks(generatedPlan);
+
+  if (generatedTasks.length === 0) {
+    return data;
+  }
+
+  const regularTasks = data.planner.tasks.filter(
+    (task) => !String(task.id).startsWith("ai-generated-")
+  );
+
+  return {
+    ...data,
+    planner: {
+      ...data.planner,
+      tasks: [...generatedTasks, ...regularTasks],
+    },
+  };
+}
+
+export function saveGeneratedAIStudyPlan(generatedPlan) {
+  try {
+    localStorage.setItem(generatedAIStudyPlanKey, JSON.stringify(generatedPlan));
+  } catch (err) {
+    console.warn("Failed to save generated AI study plan", err);
+  }
+}
+
+export async function getLearningPlanData() {
+  if (useMockApi) {
+    return mockResponse(mergeGeneratedAIStudyPlan(learningPlanMockData));
+  }
+
+  const data = await request.get("/learning-plan");
+
+  return mergeGeneratedAIStudyPlan(data);
 }
 
 export async function createStudyPlan(newPlan) {
