@@ -103,7 +103,7 @@ export default function TopNav() {
 
       <div className={styles.navRight}>
         <div className={styles.navExtraLinks}>
-          <Link to="#" className={`${styles.navLinkItem} ${styles.navLearnWithAI}`}>Learn with AI</Link>
+          <Link to="/" className={`${styles.navLinkItem} ${styles.navLearnWithAI}`}>Learn with AI</Link>
           <Link to="/" className={styles.navLinkItem}>My Profile</Link>
         </div>
 

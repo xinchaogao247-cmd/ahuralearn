@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 
+import { showToast } from "../../common/toast";
 import PlanHeader from "../PlanHeader";
 import TaskCard from "../TaskCard";
 import styles from "./StudyStats.module.css";
@@ -26,6 +27,8 @@ const priorityRank = {
   Medium: 1,
   Low: 2,
 };
+
+const TASKS_PER_PAGE = 3;
 
 function getTaskPriority(task) {
   if (task.priority) {
@@ -72,6 +75,7 @@ export default function StudyStats({ planner }) {
   const [tasks, setTasks] = useState(planner.tasks);
   const [manualPlan, setManualPlan] = useState(emptyManualPlan);
   const [editingTaskId, setEditingTaskId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const visibleTasks = useMemo(() => {
     const filteredTasks =
@@ -83,6 +87,20 @@ export default function StudyStats({ planner }) {
 
     return sortTasks(filteredTasks);
   }, [mode, tasks]);
+
+  const totalPages = Math.max(1, Math.ceil(visibleTasks.length / TASKS_PER_PAGE));
+  const activePage = Math.min(currentPage, totalPages);
+  const pageStartIndex = (activePage - 1) * TASKS_PER_PAGE;
+  const paginatedTasks = visibleTasks.slice(
+    pageStartIndex,
+    pageStartIndex + TASKS_PER_PAGE
+  );
+  const pageRangeStart = visibleTasks.length === 0 ? 0 : pageStartIndex + 1;
+  const pageRangeEnd = Math.min(
+    pageStartIndex + TASKS_PER_PAGE,
+    visibleTasks.length
+  );
+  const shouldShowPagination = visibleTasks.length > TASKS_PER_PAGE;
 
   const handleToggleComplete = (taskId) => {
     setTasks((currentTasks) =>
@@ -139,6 +157,7 @@ export default function StudyStats({ planner }) {
 
   const handleModeChange = (nextMode) => {
     setMode((currentMode) => (currentMode === nextMode ? "none" : nextMode));
+    setCurrentPage(1);
 
     if (nextMode !== "manual") {
       resetManualPlan();
@@ -161,6 +180,7 @@ export default function StudyStats({ planner }) {
     const title = manualPlan.title.trim();
 
     if (!title) {
+      showToast("Please enter a study plan title.", "warning");
       return;
     }
 
@@ -185,6 +205,7 @@ export default function StudyStats({ planner }) {
             : task
         )
       );
+      showToast("Study plan updated successfully.", "success");
     } else {
       setTasks((currentTasks) => [
         {
@@ -193,6 +214,8 @@ export default function StudyStats({ planner }) {
         },
         ...currentTasks,
       ]);
+      setCurrentPage(1);
+      showToast("Study plan added successfully.", "success");
     }
 
     resetManualPlan();
@@ -306,7 +329,7 @@ export default function StudyStats({ planner }) {
       )}
 
       <div className={styles.taskList}>
-        {visibleTasks.map((task) => (
+        {paginatedTasks.map((task) => (
           <TaskCard
             key={task.id}
             task={task}
@@ -316,6 +339,54 @@ export default function StudyStats({ planner }) {
           />
         ))}
       </div>
+
+      {shouldShowPagination && (
+        <div className={styles.pagination} aria-label="Study plan pagination">
+          <p>
+            {pageRangeStart}-{pageRangeEnd} of {visibleTasks.length} plans
+          </p>
+
+          <div className={styles.pageControls}>
+            <button
+              type="button"
+              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+              disabled={activePage === 1}
+              aria-label="Previous page"
+            >
+              Prev
+            </button>
+
+            {Array.from({ length: totalPages }, (_, index) => {
+              const pageNumber = index + 1;
+
+              return (
+                <button
+                  key={pageNumber}
+                  type="button"
+                  className={
+                    activePage === pageNumber ? styles.activePage : undefined
+                  }
+                  onClick={() => setCurrentPage(pageNumber)}
+                  aria-current={activePage === pageNumber ? "page" : undefined}
+                >
+                  {pageNumber}
+                </button>
+              );
+            })}
+
+            <button
+              type="button"
+              onClick={() =>
+                setCurrentPage((page) => Math.min(totalPages, page + 1))
+              }
+              disabled={activePage === totalPages}
+              aria-label="Next page"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,30 +1,28 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Plus, X } from "lucide-react";
-import GoalItem from "../GoalItem";
 
+import { showToast } from "../../common/toast";
+import GoalItem from "../GoalItem";
 import styles from "./WeeklyGoals.module.css";
 
 const emptyGoalForm = {
   title: "",
   type: "Course",
   current: "0",
-  total: "",
+  total: "5",
   dueDay: "Friday",
 };
+
+const GOALS_PER_PAGE = 4;
 
 export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
   const [localGoals, setLocalGoals] = useState(goals);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [goalForm, setGoalForm] = useState(emptyGoalForm);
-  const [formError, setFormError] = useState("");
+  const [editingGoalId, setEditingGoalId] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // 父级共享目标数据变化时，同步到本地列表，保证不同页面看到的数据一致。
-  useEffect(() => {
-    setLocalGoals(goals);
-  }, [goals]);
-
-  // 统计本周目标完成情况，用于标题下方的进度文案。
   const goalStats = useMemo(() => {
     const achievedCount = localGoals.filter((goal) => goal.achieved).length;
 
@@ -33,6 +31,20 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
       totalCount: localGoals.length,
     };
   }, [localGoals]);
+
+  const totalPages = Math.max(1, Math.ceil(localGoals.length / GOALS_PER_PAGE));
+  const activePage = Math.min(currentPage, totalPages);
+  const pageStartIndex = (activePage - 1) * GOALS_PER_PAGE;
+  const paginatedGoals = localGoals.slice(
+    pageStartIndex,
+    pageStartIndex + GOALS_PER_PAGE
+  );
+  const pageRangeStart = localGoals.length === 0 ? 0 : pageStartIndex + 1;
+  const pageRangeEnd = Math.min(
+    pageStartIndex + GOALS_PER_PAGE,
+    localGoals.length
+  );
+  const shouldShowPagination = localGoals.length > GOALS_PER_PAGE;
 
   const updateGoalForm = (field, value) => {
     setGoalForm((currentForm) => ({
@@ -44,7 +56,30 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
   const closeForm = () => {
     setIsFormOpen(false);
     setGoalForm(emptyGoalForm);
-    setFormError("");
+    setEditingGoalId(null);
+  };
+
+  const openAddForm = () => {
+    if (isFormOpen && !editingGoalId) {
+      closeForm();
+      return;
+    }
+
+    setIsFormOpen(true);
+    setEditingGoalId(null);
+    setGoalForm(emptyGoalForm);
+  };
+
+  const handleEditGoal = (goal) => {
+    setIsFormOpen(true);
+    setEditingGoalId(goal.id);
+    setGoalForm({
+      title: goal.title,
+      type: goal.type || "Learning",
+      current: String(goal.current),
+      total: String(goal.total),
+      dueDay: goal.dueDay || "Friday",
+    });
   };
 
   const handleSubmit = async (event) => {
@@ -55,36 +90,73 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
     const currentProgress = Number(goalForm.current);
 
     if (!goalTitle || totalTarget <= 0 || currentProgress < 0) {
-      setFormError("Enter a title, valid progress, and a target greater than 0.");
+      const message = "Enter a title, valid progress, and a target greater than 0.";
+
+      showToast(message, "warning");
       return;
     }
 
     if (currentProgress > totalTarget) {
-      setFormError("Current progress cannot be greater than the total target.");
+      const message = "Current progress cannot be greater than the total target.";
+
+      showToast(message, "warning");
       return;
     }
 
+    const goalPayload = {
+      title: goalTitle,
+      type: goalForm.type,
+      current: currentProgress,
+      total: totalTarget,
+      dueDay: goalForm.dueDay,
+      achieved: currentProgress >= totalTarget,
+      achievedDay: currentProgress >= totalTarget ? "Today" : null,
+      previousCurrent:
+        currentProgress >= totalTarget ? Math.max(totalTarget - 1, 0) : null,
+    };
+
     try {
-      // 添加目标仍通过父级 API/hook 完成，方便未来替换成真实后端。
       setIsSaving(true);
-      setFormError("");
-      await onAddGoal({
-        title: goalTitle,
-        type: goalForm.type,
-        current: currentProgress,
-        total: totalTarget,
-        dueDay: goalForm.dueDay,
-      });
+
+      if (editingGoalId) {
+        setLocalGoals((currentGoals) =>
+          currentGoals.map((goal) =>
+            goal.id === editingGoalId
+              ? {
+                  ...goal,
+                  ...goalPayload,
+                }
+              : goal
+          )
+        );
+        showToast("Weekly goal updated successfully.", "success");
+      } else {
+        const createdGoal = await onAddGoal(goalPayload);
+
+        setLocalGoals((currentGoals) => [
+          createdGoal ?? {
+            id: Date.now(),
+            ...goalPayload,
+          },
+          ...currentGoals,
+        ]);
+        setCurrentPage(1);
+        showToast("Weekly goal added successfully.", "success");
+      }
+
       closeForm();
     } catch {
-      setFormError("Could not add weekly goal.");
+      const message = editingGoalId
+        ? "Could not update weekly goal."
+        : "Could not add weekly goal.";
+
+      showToast(message, "error");
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleIncrementGoal = (goalId) => {
-    // 本地即时更新让交互更快；达到 total 时自动标记为完成。
     setLocalGoals((currentGoals) =>
       currentGoals.map((goal) => {
         if (goal.id !== goalId || goal.achieved) {
@@ -99,6 +171,37 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
           current: nextCurrent,
           achieved,
           achievedDay: achieved ? "Today" : goal.achievedDay,
+          previousCurrent: achieved ? goal.current : goal.previousCurrent,
+        };
+      })
+    );
+  };
+
+  const handleToggleCompleteGoal = (goalId) => {
+    setLocalGoals((currentGoals) =>
+      currentGoals.map((goal) => {
+        if (goal.id !== goalId) {
+          return goal;
+        }
+
+        const isAchieved = goal.achieved || goal.current >= goal.total;
+
+        if (isAchieved) {
+          return {
+            ...goal,
+            current: goal.previousCurrent ?? Math.max(goal.total - 1, 0),
+            achieved: false,
+            achievedDay: null,
+            previousCurrent: null,
+          };
+        }
+
+        return {
+          ...goal,
+          previousCurrent: goal.current,
+          current: goal.total,
+          achieved: true,
+          achievedDay: "Today",
         };
       })
     );
@@ -110,6 +213,7 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
         goal.id === goalId
           ? {
               ...goal,
+              previousCurrent: goal.current,
               current: goal.total,
               achieved: true,
               achievedDay: "Today",
@@ -120,11 +224,20 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
   };
 
   const handleDeleteGoal = async (goalId) => {
-    // 先从界面移除，再通知共享目标层删除数据。
     setLocalGoals((currentGoals) =>
       currentGoals.filter((goal) => goal.id !== goalId)
     );
-    await onDeleteGoal?.(goalId);
+
+    if (editingGoalId === goalId) {
+      closeForm();
+    }
+
+    try {
+      await onDeleteGoal?.(goalId);
+      showToast("Weekly goal deleted successfully.", "success");
+    } catch {
+      showToast("Could not delete weekly goal.", "error");
+    }
   };
 
   return (
@@ -133,22 +246,34 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
         <div>
           <h2>Weekly Goals</h2>
           <p>
-            {goalStats.achievedCount}/{goalStats.totalCount} goals achieved this week
+            {goalStats.achievedCount}/{goalStats.totalCount} goals achieved this
+            week
           </p>
         </div>
 
         <button
           type="button"
           aria-label={isFormOpen ? "Close weekly goal form" : "Add weekly goal"}
-          onClick={() => setIsFormOpen((current) => !current)}
+          onClick={openAddForm}
         >
-          {isFormOpen ? <X size={21} strokeWidth={2.3} /> : <Plus size={22} strokeWidth={2.3} />}
+          {isFormOpen ? (
+            <X size={21} strokeWidth={2.3} />
+          ) : (
+            <Plus size={22} strokeWidth={2.3} />
+          )}
         </button>
       </div>
 
       {isFormOpen ? (
         <div className={styles.formPanel}>
           <form onSubmit={handleSubmit}>
+            <div className={styles.formHeader}>
+              <div>
+                <h3>{editingGoalId ? "Edit Weekly Goal" : "Create Weekly Goal"}</h3>
+                <p>Set the target, current progress, and due day.</p>
+              </div>
+            </div>
+
             <div className={styles.formGrid}>
               <label className={styles.titleField}>
                 Goal title
@@ -180,7 +305,9 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
                   type="number"
                   min="0"
                   value={goalForm.current}
-                  onChange={(event) => updateGoalForm("current", event.target.value)}
+                  onChange={(event) =>
+                    updateGoalForm("current", event.target.value)
+                  }
                 />
               </label>
 
@@ -191,7 +318,6 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
                   min="1"
                   value={goalForm.total}
                   onChange={(event) => updateGoalForm("total", event.target.value)}
-                  placeholder="5"
                 />
               </label>
 
@@ -212,14 +338,18 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
               </label>
             </div>
 
-            {formError ? <p className={styles.formError}>{formError}</p> : null}
-
             <div className={styles.formActions}>
               <button type="button" onClick={closeForm}>
                 Cancel
               </button>
               <button type="submit" disabled={isSaving}>
-                {isSaving ? "Adding..." : "Add Goal"}
+                {isSaving
+                  ? editingGoalId
+                    ? "Saving..."
+                    : "Adding..."
+                  : editingGoalId
+                    ? "Save Goal"
+                    : "Add Goal"}
               </button>
             </div>
           </form>
@@ -227,16 +357,66 @@ export default function WeeklyGoals({ goals, onAddGoal, onDeleteGoal }) {
       ) : null}
 
       <div className={styles.goalList}>
-        {localGoals.map((goal) => (
+        {paginatedGoals.map((goal) => (
           <GoalItem
             key={goal.id}
             goal={goal}
             onComplete={handleCompleteGoal}
             onDelete={handleDeleteGoal}
+            onEdit={handleEditGoal}
             onIncrement={handleIncrementGoal}
+            onToggleComplete={handleToggleCompleteGoal}
           />
         ))}
       </div>
+
+      {shouldShowPagination && (
+        <div className={styles.pagination} aria-label="Weekly goals pagination">
+          <p>
+            {pageRangeStart}-{pageRangeEnd} of {localGoals.length} goals
+          </p>
+
+          <div className={styles.pageControls}>
+            <button
+              type="button"
+              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+              disabled={activePage === 1}
+              aria-label="Previous page"
+            >
+              Prev
+            </button>
+
+            {Array.from({ length: totalPages }, (_, index) => {
+              const pageNumber = index + 1;
+
+              return (
+                <button
+                  key={pageNumber}
+                  type="button"
+                  className={
+                    activePage === pageNumber ? styles.activePage : undefined
+                  }
+                  onClick={() => setCurrentPage(pageNumber)}
+                  aria-current={activePage === pageNumber ? "page" : undefined}
+                >
+                  {pageNumber}
+                </button>
+              );
+            })}
+
+            <button
+              type="button"
+              onClick={() =>
+                setCurrentPage((page) => Math.min(totalPages, page + 1))
+              }
+              disabled={activePage === totalPages}
+              aria-label="Next page"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

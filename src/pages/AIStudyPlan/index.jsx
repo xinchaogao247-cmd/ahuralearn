@@ -14,14 +14,9 @@ export default function AIStudyPlan() {
   const [messages, setMessages] = useState([]);
   const [isResponding, setIsResponding] = useState(false);
   const [previewHeight, setPreviewHeight] = useState(null);
+  const messageIdRef = useRef(0);
   const responseTimerRef = useRef(null);
   const previewCardRef = useRef(null);
-
-  useEffect(() => {
-    if (data?.chat?.[0]) {
-      setMessages([data.chat[0]]);
-    }
-  }, [data]);
 
   useEffect(() => {
     return () => {
@@ -80,7 +75,7 @@ export default function AIStudyPlan() {
     );
   }
 
-  const displayedMessages = messages;
+  const displayedMessages = messages.length > 0 ? messages : [data.chat[0]];
   const aiReplies = data.chat.filter((message) => message.role === "ai").slice(1);
   const userMessageCount = displayedMessages.filter(
     (message) => message.role === "user"
@@ -98,8 +93,13 @@ export default function AIStudyPlan() {
     const currentUserMessageCount = currentMessages.filter(
       (message) => message.role === "user"
     ).length;
+    messageIdRef.current += 1;
+    const userMessageId = `user-${messageIdRef.current}`;
+    messageIdRef.current += 1;
+    const aiMessageId = `ai-${messageIdRef.current}`;
+
     const nextAiReply = aiReplies[currentUserMessageCount] ?? {
-      id: `ai-${Date.now()}`,
+      id: aiMessageId,
       role: "ai",
       text: "Great, I have enough information to generate your study plan. Review the plan preview and create it when you're ready.",
       meta: "AI Assistant - Just now",
@@ -108,7 +108,7 @@ export default function AIStudyPlan() {
     setMessages([
       ...currentMessages,
       {
-        id: `user-${Date.now()}`,
+        id: userMessageId,
         role: "user",
         text,
         meta: "You - Just now",
@@ -122,7 +122,7 @@ export default function AIStudyPlan() {
         ...current,
         {
           ...nextAiReply,
-          id: `${nextAiReply.id}-${Date.now()}`,
+          id: aiMessageId,
           meta: "AI Assistant - Just now",
         },
       ]);

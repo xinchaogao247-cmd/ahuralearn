@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import CourseCard from "../CourseCard";
 import styles from "./ContinueLearning.module.css";
@@ -7,18 +7,15 @@ const COURSES_PER_PAGE = 6;
 
 export default function ContinueLearning({ courses }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(courses.length / COURSES_PER_PAGE);
+  const totalPages = Math.max(1, Math.ceil(courses.length / COURSES_PER_PAGE));
+  const activePage = Math.min(currentPage, totalPages);
   const showPagination = totalPages > 1;
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [courses]);
-
   const visibleCourses = useMemo(() => {
-    const startIndex = (currentPage - 1) * COURSES_PER_PAGE;
+    const startIndex = (activePage - 1) * COURSES_PER_PAGE;
 
     return courses.slice(startIndex, startIndex + COURSES_PER_PAGE);
-  }, [courses, currentPage]);
+  }, [activePage, courses]);
 
   if (courses.length === 0) {
     return <section className={styles.grid}>No courses found</section>;
@@ -36,7 +33,7 @@ export default function ContinueLearning({ courses }) {
         <div className={styles.pagination} aria-label="Course pagination">
           <button
             type="button"
-            disabled={currentPage === 1}
+            disabled={activePage === 1}
             onClick={() => setCurrentPage((page) => page - 1)}
           >
             Prev
@@ -48,7 +45,7 @@ export default function ContinueLearning({ courses }) {
             return (
               <button
                 type="button"
-                className={page === currentPage ? styles.activePage : ""}
+                className={page === activePage ? styles.activePage : ""}
                 key={page}
                 onClick={() => setCurrentPage(page)}
               >
@@ -59,7 +56,7 @@ export default function ContinueLearning({ courses }) {
 
           <button
             type="button"
-            disabled={currentPage === totalPages}
+            disabled={activePage === totalPages}
             onClick={() => setCurrentPage((page) => page + 1)}
           >
             Next

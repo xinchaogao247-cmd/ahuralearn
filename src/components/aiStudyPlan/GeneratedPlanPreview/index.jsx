@@ -9,14 +9,11 @@ const moduleIcons = {
   DB: Database,
 };
 
-export default function GeneratedPlanPreview({ aiLogs, modules, onCreatePlan }) {
+function AnimatedPlanPreview({ aiLogs, modules, onCreatePlan }) {
   const [visibleLogs, setVisibleLogs] = useState([]);
   const [isGenerationComplete, setIsGenerationComplete] = useState(false);
 
   useEffect(() => {
-    setVisibleLogs([]);
-    setIsGenerationComplete(false);
-
     const timers = aiLogs.map((log, index) =>
       window.setTimeout(() => {
         setVisibleLogs((currentLogs) => [...currentLogs, log]);
@@ -90,5 +87,16 @@ export default function GeneratedPlanPreview({ aiLogs, modules, onCreatePlan }) 
         {isGenerationComplete ? "Create My Study Plan →" : "Generating Plan..."}
       </button>
     </aside>
+  );
+}
+
+export default function GeneratedPlanPreview({ aiLogs, modules, onCreatePlan }) {
+  return (
+    <AnimatedPlanPreview
+      key={aiLogs.join("|")}
+      aiLogs={aiLogs}
+      modules={modules}
+      onCreatePlan={onCreatePlan}
+    />
   );
 }

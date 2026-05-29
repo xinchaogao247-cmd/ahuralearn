@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Check, Pencil, Share2, X } from "lucide-react";
 
+import { showToast } from "../../common/toast";
 import styles from "./ProfileCard.module.css";
 
 const fallbackAvatar = "https://i.pravatar.cc/150?img=47";
@@ -35,6 +36,7 @@ export default function ProfileCard({ profile }) {
     const file = event.target.files?.[0];
 
     if (!file || !file.type.startsWith("image/")) {
+      showToast("Please choose a valid image file.", "warning");
       return;
     }
 
@@ -59,8 +61,15 @@ export default function ProfileCard({ profile }) {
           );
         } catch (error) {
           console.warn("Failed to update stored avatar", error);
+          showToast("Avatar changed, but local profile sync failed.", "warning");
         }
       }
+
+      showToast("Avatar updated successfully.", "success");
+    };
+
+    reader.onerror = () => {
+      showToast("Could not read the selected image.", "error");
     };
 
     reader.readAsDataURL(file);
@@ -85,11 +94,20 @@ export default function ProfileCard({ profile }) {
   };
 
   const handleSave = () => {
+    const name = draftProfile.name.trim();
+    const role = draftProfile.role.trim();
+    const description = draftProfile.description.trim();
+
+    if (!name || !role || !description) {
+      showToast("Please complete all profile fields before saving.", "warning");
+      return;
+    }
+
     const nextProfile = {
       ...draftProfile,
-      name: draftProfile.name.trim() || profileInfo.name,
-      role: draftProfile.role.trim() || profileInfo.role,
-      description: draftProfile.description.trim() || profileInfo.description,
+      name,
+      role,
+      description,
     };
     const storedUser = localStorage.getItem("userInfo");
 
@@ -106,12 +124,14 @@ export default function ProfileCard({ profile }) {
         );
       } catch (error) {
         console.warn("Failed to update stored user info", error);
+        showToast("Profile saved, but local account sync failed.", "warning");
       }
     }
 
     setProfileInfo(nextProfile);
     setDraftProfile(nextProfile);
     setEditing(false);
+    showToast("Profile updated successfully.", "success");
   };
 
   const handleShare = async () => {
@@ -125,11 +145,13 @@ export default function ProfileCard({ profile }) {
       if (navigator.share) {
         await navigator.share(shareData);
         setShareLabel("Shared");
+        showToast("Profile shared successfully.", "success");
       } else if (navigator.clipboard) {
         await navigator.clipboard.writeText(
           `${shareData.text} ${shareData.url}`
         );
         setShareLabel("Copied Link");
+        showToast("Profile link copied.", "success");
       } else {
         const textArea = document.createElement("textarea");
 
@@ -142,6 +164,7 @@ export default function ProfileCard({ profile }) {
         document.execCommand("copy");
         document.body.removeChild(textArea);
         setShareLabel("Copied Link");
+        showToast("Profile link copied.", "success");
       }
 
       window.setTimeout(() => {
@@ -150,6 +173,7 @@ export default function ProfileCard({ profile }) {
     } catch (error) {
       if (error.name !== "AbortError") {
         setShareLabel("Share Failed");
+        showToast("Could not share profile.", "error");
         window.setTimeout(() => {
           setShareLabel("Share Profile");
         }, 1800);

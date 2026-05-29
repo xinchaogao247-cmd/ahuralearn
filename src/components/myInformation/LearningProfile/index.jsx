@@ -1,6 +1,9 @@
 import { useState } from "react";
 
+import { showToast } from "../../common/toast";
 import styles from "./LearningProfile.module.css";
+
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function LearningProfile({ learningProfile }) {
   const [profileInfo, setProfileInfo] = useState(learningProfile);
@@ -25,17 +28,32 @@ export default function LearningProfile({ learningProfile }) {
   };
 
   const handleSave = () => {
+    const email = draftProfile.email.trim();
+    const goal = draftProfile.goal.trim();
+    const preferredField = draftProfile.preferredField.trim();
+    const currentFocus = draftProfile.currentFocus.trim();
+
+    if (!email || !goal || !preferredField || !currentFocus) {
+      showToast("Please complete all learning profile fields.", "warning");
+      return;
+    }
+
     const nextProfile = {
-      email: draftProfile.email.trim() || profileInfo.email,
-      goal: draftProfile.goal.trim() || profileInfo.goal,
-      preferredField:
-        draftProfile.preferredField.trim() || profileInfo.preferredField,
-      currentFocus: draftProfile.currentFocus.trim() || profileInfo.currentFocus,
+      email,
+      goal,
+      preferredField,
+      currentFocus,
     };
+
+    if (!emailPattern.test(nextProfile.email)) {
+      showToast("Please enter a valid email address.", "warning");
+      return;
+    }
 
     setProfileInfo(nextProfile);
     setDraftProfile(nextProfile);
     setEditing(false);
+    showToast("Learning profile updated successfully.", "success");
   };
 
   return (

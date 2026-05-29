@@ -55,6 +55,20 @@
   gap: 16px;
 }
 
+.formHeader h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.formHeader p {
+  margin: 6px 0 0;
+  color: #8da0bd;
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .formGrid {
   display: grid;
   grid-template-columns: minmax(0, 1.3fr) repeat(4, minmax(120px, 0.45fr));
@@ -135,6 +149,60 @@
   gap: 20px;
 }
 
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.pagination p {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.pageControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pageControls button {
+  min-width: 40px;
+  height: 36px;
+  border: none;
+  border-radius: 999px;
+  padding: 0 13px;
+  background: #f1f5f9;
+  color: #475569;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 900;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.pageControls button:hover:not(:disabled) {
+  background: #f25a16;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.pageControls button:disabled {
+  color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+.pageControls .activePage {
+  background: #f25a16;
+  color: #ffffff;
+}
+
 @media (max-width: 980px) {
   .formGrid {
     grid-template-columns: 1fr 1fr;
@@ -148,5 +216,16 @@
 @media (max-width: 640px) {
   .formGrid {
     grid-template-columns: 1fr;
+  }
+
+  .pagination {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .pageControls {
+    justify-content: space-between;
+    overflow-x: auto;
+    padding-bottom: 2px;
   }
 }

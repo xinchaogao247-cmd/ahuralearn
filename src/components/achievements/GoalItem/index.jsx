@@ -1,9 +1,16 @@
-import { Check, Trash2 } from "lucide-react";
+import { Check, Pencil, Trash2 } from "lucide-react";
 import ProgressBar from "../ProgressBar";
 
 import styles from "./GoalItem.module.css";
 
-export default function GoalItem({ goal, onComplete, onDelete, onIncrement }) {
+export default function GoalItem({
+  goal,
+  onComplete,
+  onDelete,
+  onEdit,
+  onIncrement,
+  onToggleComplete,
+}) {
   // 根据当前进度实时计算完成百分比，避免依赖额外字段。
   const progress =
     goal.total > 0 ? Math.round((goal.current / goal.total) * 100) : 0;
@@ -19,9 +26,8 @@ export default function GoalItem({ goal, onComplete, onDelete, onIncrement }) {
       <button
         className={`${styles.checkBox} ${isAchieved ? styles.achieved : ""}`}
         type="button"
-        aria-label={isAchieved ? "Goal achieved" : "Complete goal"}
-        disabled={isAchieved}
-        onClick={() => onComplete(goal.id)}
+        aria-label={isAchieved ? "Mark goal as incomplete" : "Complete goal"}
+        onClick={() => onToggleComplete(goal.id)}
       >
         {isAchieved ? <Check size={16} strokeWidth={3} /> : null}
       </button>
@@ -51,6 +57,13 @@ export default function GoalItem({ goal, onComplete, onDelete, onIncrement }) {
                 </button>
               </>
             )}
+            <button
+              type="button"
+              aria-label={`Edit ${goal.title}`}
+              onClick={() => onEdit(goal)}
+            >
+              <Pencil size={15} strokeWidth={2.4} />
+            </button>
             <button type="button" onClick={() => onDelete(goal.id)}>
               <Trash2 size={15} strokeWidth={2.4} />
             </button>
