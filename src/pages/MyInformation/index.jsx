@@ -1,14 +1,54 @@
+import { useEffect, useState } from "react";
+
 import styles from "./MyInformation.module.css";
 
 import PageShell from "../../components/profileLayout/PageShell";
-import { useMyInformation } from "./hooks/useMyInformation";
+import { getMyInformationPageData } from "../../api/user/user";
 
 import ProfileCard from "../../components/myInformation/ProfileCard";
 import LearningStats from "../../components/myInformation/LearningStats";
 import LearningProfile from "../../components/myInformation/LearningProfile";
 
 export default function MyInformation() {
-  const { data, loading, error, empty } = useMyInformation();
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadMyInformationData() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const myInformationData = await getMyInformationPageData();
+
+        if (!ignore) {
+          setData(myInformationData);
+        }
+      } catch (err) {
+        if (!ignore) {
+          setError(err);
+        }
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadMyInformationData();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const empty =
+    !loading &&
+    !error &&
+    (!data || !data.profile || !data.learningProfile);
 
   if (loading) {
     return (

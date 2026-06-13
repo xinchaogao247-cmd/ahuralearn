@@ -3,8 +3,6 @@ import { useState } from "react";
 import { showToast } from "../../common/toast";
 import styles from "./LearningProfile.module.css";
 
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 export default function LearningProfile({ learningProfile }) {
   const [profileInfo, setProfileInfo] = useState(learningProfile);
   const [draftProfile, setDraftProfile] = useState(learningProfile);
@@ -28,27 +26,22 @@ export default function LearningProfile({ learningProfile }) {
   };
 
   const handleSave = () => {
-    const email = draftProfile.email.trim();
-    const goal = draftProfile.goal.trim();
-    const preferredField = draftProfile.preferredField.trim();
-    const currentFocus = draftProfile.currentFocus.trim();
+    const age = draftProfile.email.trim();
+    const gender = draftProfile.goal.trim();
+    const region = draftProfile.preferredField.trim();
+    const birthday = draftProfile.currentFocus.trim();
 
-    if (!email || !goal || !preferredField || !currentFocus) {
+    if (!age || !gender || !region || !birthday) {
       showToast("Please complete all learning profile fields.", "warning");
       return;
     }
 
     const nextProfile = {
-      email,
-      goal,
-      preferredField,
-      currentFocus,
+      email: age,
+      goal: gender,
+      preferredField: region,
+      currentFocus: birthday,
     };
-
-    if (!emailPattern.test(nextProfile.email)) {
-      showToast("Please enter a valid email address.", "warning");
-      return;
-    }
 
     setProfileInfo(nextProfile);
     setDraftProfile(nextProfile);
@@ -62,10 +55,9 @@ export default function LearningProfile({ learningProfile }) {
 
       <div className={styles.infoList}>
         <div className={styles.infoItem}>
-          <span>Email Address</span>
+          <span>Age</span>
           {editing ? (
             <input
-              type="email"
               value={draftProfile.email}
               onChange={(event) => updateDraftField("email", event.target.value)}
             />
@@ -75,7 +67,7 @@ export default function LearningProfile({ learningProfile }) {
         </div>
 
         <div className={styles.infoItem}>
-          <span>Learning Goal</span>
+          <span>Gender</span>
           {editing ? (
             <input
               value={draftProfile.goal}
@@ -87,7 +79,7 @@ export default function LearningProfile({ learningProfile }) {
         </div>
 
         <div className={styles.infoItem}>
-          <span>Preferred Field</span>
+          <span>Region</span>
           {editing ? (
             <input
               value={draftProfile.preferredField}
@@ -101,7 +93,7 @@ export default function LearningProfile({ learningProfile }) {
         </div>
 
         <div className={styles.infoItem}>
-          <span>Current Focus</span>
+          <span>Birthday</span>
           {editing ? (
             <input
               value={draftProfile.currentFocus}

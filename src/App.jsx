@@ -1,6 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 
 import AiStudyPlan from "./pages/aiStudyPlan";
+import CourseDetail from "./pages/courseDetail";
+import CourseGame from "./pages/courseGame";
 import Dashboard from "./pages/dashboard";
 import Courses from "./pages/courses";
 import LearningPlan from "./pages/learningPlan";
@@ -15,6 +17,8 @@ function App() {
       <Route path="/" element={<Dashboard />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/courses" element={<Courses />} />
+      <Route path="/courses/:courseId" element={<CourseDetail />} />
+      <Route path="/courses/:courseId/game" element={<CourseGame />} />
       <Route path="/learningPlan" element={<LearningPlan />} />
       <Route path="/aiStudyPlan" element={<AiStudyPlan />} />
       <Route path="/achievements" element={<Achievements />} />

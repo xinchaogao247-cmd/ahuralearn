@@ -1,14 +1,57 @@
+import { useEffect, useState } from "react";
+
 import styles from "./MyExam.module.css";
 
 import PageShell from "../../components/profileLayout/PageShell";
-import { useMyExam } from "./hooks/useMyExam";
+import { getMyExamPageData } from "../../api/exam/myExam";
 
 import ExamResultCard from "../../components/myExam/ExamResultCard";
 import SubjectBreakdown from "../../components/myExam/SubjectBreakdown";
 import RecentExams from "../../components/myExam/RecentExams";
 
 export default function MyExam() {
-  const { data, loading, error, empty } = useMyExam();
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadMyExamData() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const myExamData = await getMyExamPageData();
+
+        if (!ignore) {
+          setData(myExamData);
+        }
+      } catch (err) {
+        if (!ignore) {
+          setError(err);
+        }
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadMyExamData();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const empty =
+    !loading &&
+    !error &&
+    (!data ||
+      !data.result ||
+      (data.subjects?.length ?? 0) === 0 ||
+      (data.recentExams?.length ?? 0) === 0);
 
   if (loading) {
     return (

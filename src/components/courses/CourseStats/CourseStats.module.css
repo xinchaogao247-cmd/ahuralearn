@@ -154,6 +154,7 @@
   padding: 30px;
   border-radius: 20px;
   background: #ffffff;
+  text-align: center;
   box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28);
 }
 
@@ -182,6 +183,7 @@
   width: 52px;
   height: 52px;
   border-radius: 16px;
+  margin: 0 auto;
   background: #fff7ed;
   color: #f97316;
   display: flex;
@@ -206,7 +208,7 @@
 
 .dialogActions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 12px;
   margin-top: 26px;
 }

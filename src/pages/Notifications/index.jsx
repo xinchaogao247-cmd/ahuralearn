@@ -1,22 +1,162 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import ExpiringPlanCard from "../../components/notifications/ExpiringPlanCard";
 import PageShell from "../../components/profileLayout/PageShell";
-import { useNotifications } from "./hooks/useNotifications";
+import {
+  acknowledgeNotification,
+  deleteNotification,
+  getNotificationsData,
+} from "../../api/notification/notifications";
 import styles from "./Notifications.module.css";
 
 const NOTIFICATIONS_PER_PAGE = 4;
+const notificationsUpdatedEvent = "notifications-updated";
+const notificationStateKey = "__ahuralearnNotificationState";
+const priorityRank = {
+  High: 0,
+  Medium: 1,
+  Low: 2,
+};
+
+function getNotificationState() {
+  if (!window[notificationStateKey]) {
+    window[notificationStateKey] = {
+      acknowledgedPlanIds: [],
+      deletedPlanIds: [],
+    };
+  }
+
+  return window[notificationStateKey];
+}
+
+function getVisibleExpiringPlans(plans = []) {
+  const { acknowledgedPlanIds, deletedPlanIds } = getNotificationState();
+
+  return plans
+    .filter((plan) => !deletedPlanIds.includes(plan.id))
+    .map((plan) => ({
+      ...plan,
+      isAcknowledged: acknowledgedPlanIds.includes(plan.id),
+    }));
+}
+
+function sortNotifications(plans) {
+  return [...plans].sort((firstPlan, secondPlan) => {
+    const dateDifference =
+      new Date(firstPlan.dueDate).getTime() -
+      new Date(secondPlan.dueDate).getTime();
+
+    if (dateDifference !== 0) {
+      return dateDifference;
+    }
+
+    return (
+      (priorityRank[firstPlan.priority] ?? 99) -
+      (priorityRank[secondPlan.priority] ?? 99)
+    );
+  });
+}
+
+function prepareNotificationsData(data) {
+  return {
+    ...data,
+    expiringPlans: sortNotifications(
+      getVisibleExpiringPlans(data.expiringPlans ?? [])
+    ),
+  };
+}
+
+function acknowledgeExpiringPlan(planId) {
+  const state = getNotificationState();
+
+  if (!state.acknowledgedPlanIds.includes(planId)) {
+    state.acknowledgedPlanIds = [...state.acknowledgedPlanIds, planId];
+  }
+
+  window.dispatchEvent(new Event(notificationsUpdatedEvent));
+}
+
+function deleteExpiringPlan(planId) {
+  const state = getNotificationState();
+
+  if (!state.deletedPlanIds.includes(planId)) {
+    state.deletedPlanIds = [...state.deletedPlanIds, planId];
+  }
+
+  window.dispatchEvent(new Event(notificationsUpdatedEvent));
+}
 
 export default function Notifications() {
   const [currentPage, setCurrentPage] = useState(1);
-  const {
-    acknowledgePlan,
-    deletePlan,
-    empty,
-    error,
-    expiringPlans,
-    loading,
-  } = useNotifications();
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadNotificationsData() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const notificationsData = await getNotificationsData();
+        const preparedNotificationsData =
+          prepareNotificationsData(notificationsData);
+
+        if (!ignore) {
+          setData(preparedNotificationsData);
+        }
+      } catch (err) {
+        if (!ignore) {
+          setError(err);
+        }
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadNotificationsData();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const expiringPlans = data?.expiringPlans ?? [];
+  const empty = !loading && !error && expiringPlans.length === 0;
+
+  const acknowledgePlan = async (planId) => {
+    await acknowledgeNotification(planId);
+    acknowledgeExpiringPlan(planId);
+
+    setData((currentData) => ({
+      ...currentData,
+      expiringPlans: currentData.expiringPlans.map((plan) =>
+        plan.id === planId
+          ? {
+              ...plan,
+              isAcknowledged: true,
+            }
+          : plan
+      ),
+    }));
+  };
+
+  const deletePlan = async (planId) => {
+    await deleteNotification(planId);
+    deleteExpiringPlan(planId);
+
+    setData((currentData) => ({
+      ...currentData,
+      expiringPlans: currentData.expiringPlans.filter(
+        (plan) => plan.id !== planId
+      ),
+    }));
+  };
+
   const totalPages = Math.max(
     1,
     Math.ceil(expiringPlans.length / NOTIFICATIONS_PER_PAGE)

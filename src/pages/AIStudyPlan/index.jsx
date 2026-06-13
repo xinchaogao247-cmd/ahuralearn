@@ -4,13 +4,24 @@ import { useNavigate } from "react-router-dom";
 
 import GeneratedPlanPreview from "../../components/aiStudyPlan/GeneratedPlanPreview";
 import PageShell from "../../components/profileLayout/PageShell";
-import { saveGeneratedAIStudyPlan } from "../../api/learning/learningPlanApi";
-import { useAIStudyPlan } from "./hooks/useAIStudyPlan";
+import { getAIStudyPlanData } from "../../api/ai/aiService";
 import styles from "./AIStudyPlan.module.css";
+
+const generatedAIStudyPlanKey = "ahuralearn:generatedAIStudyPlan";
+
+function saveGeneratedAIStudyPlan(generatedPlan) {
+  try {
+    localStorage.setItem(generatedAIStudyPlanKey, JSON.stringify(generatedPlan));
+  } catch (err) {
+    console.warn("Failed to save generated AI study plan", err);
+  }
+}
 
 export default function AIStudyPlan() {
   const navigate = useNavigate();
-  const { data, loading, error, empty } = useAIStudyPlan();
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [answer, setAnswer] = useState("");
   const [messages, setMessages] = useState([]);
   const [isResponding, setIsResponding] = useState(false);
@@ -19,6 +30,37 @@ export default function AIStudyPlan() {
   const responseTimerRef = useRef(null);
   const previewCardRef = useRef(null);
   const chatListRef = useRef(null);
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadAIStudyPlanData() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const aiStudyPlanData = await getAIStudyPlanData();
+
+        if (!ignore) {
+          setData(aiStudyPlanData);
+        }
+      } catch (err) {
+        if (!ignore) {
+          setError(err);
+        }
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadAIStudyPlanData();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -59,6 +101,10 @@ export default function AIStudyPlan() {
     (message) => message.role === "user"
   ).length;
   const showSuggestions = userMessageCount > 0;
+  const empty =
+    !loading &&
+    !error &&
+    (!data || (data.recommendedModules?.length ?? 0) === 0);
 
   useEffect(() => {
     const chatList = chatListRef.current;

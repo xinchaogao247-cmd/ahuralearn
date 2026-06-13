@@ -1,244 +1,174 @@
+import { useEffect, useMemo, useState } from "react";
+
 import AchievementSummary from "../../components/achievements/AchievementSummary";
 import WeeklyGoals from "../../components/achievements/WeeklyGoals";
-
 import PageShell from "../../components/profileLayout/PageShell";
-
-import { useWeeklyGoals } from "../../shared/goals/goalsApi";
-import { useAchievements } from "./hooks/useAchievements";
-
+import {
+  addWeeklyGoal,
+  deleteWeeklyGoal,
+  getWeeklyGoals,
+} from "../../api/learning/goals";
+import { getAchievementsData } from "../../api/learning/achievements";
 import styles from "./Achievements.module.css";
 
-/**
- * Achievements 页面
- *
- * 用于展示：
- * - 用户学习成就概览
- * - Weekly Goals
- * - 已完成目标
- * - 成就统计信息
- *
- * 页面结构：
- * PageShell
- * ├─ AchievementSummary
- * └─ WeeklyGoals
- */
+function createWeeklyGoal(newGoal) {
+  return {
+    id: Date.now(),
+    title: newGoal.title,
+    type: newGoal.type || "Learning",
+    current: Number(newGoal.current) || 0,
+    total: Number(newGoal.total),
+    achieved: false,
+    achievedDay: null,
+    dueDay: newGoal.dueDay || "Friday",
+  };
+}
+
 function Achievements() {
+  const [data, setData] = useState(null);
+  const [achievementsLoading, setAchievementsLoading] = useState(true);
+  const [achievementsError, setAchievementsError] = useState(null);
 
-  /**
-   * useAchievements:
-   * 获取成就页面 summary 数据。
-   *
-   * 包含：
-   * - data
-   * - loading
-   * - error
-   * - empty
-   */
-  const {
-    data,
+  const [goals, setGoals] = useState([]);
+  const [goalsLoading, setGoalsLoading] = useState(true);
+  const [goalsError, setGoalsError] = useState(null);
 
-    /**
-     * achievementsLoading:
-     * 成就 summary 是否正在加载。
-     */
-    loading: achievementsLoading,
+  useEffect(() => {
+    let ignore = false;
 
-    /**
-     * achievementsError:
-     * 成就 summary 请求错误状态。
-     */
-    error: achievementsError,
+    async function loadAchievementsData() {
+      try {
+        setAchievementsLoading(true);
+        setAchievementsError(null);
 
-    /**
-     * achievementsEmpty:
-     * 成就 summary 是否为空。
-     */
-    empty: achievementsEmpty,
+        const achievementsData = await getAchievementsData();
 
-  } = useAchievements();
+        if (!ignore) {
+          setData(achievementsData);
+        }
+      } catch (err) {
+        if (!ignore) {
+          setAchievementsError(err);
+        }
+      } finally {
+        if (!ignore) {
+          setAchievementsLoading(false);
+        }
+      }
+    }
 
-  /**
-   * useWeeklyGoals:
-   * 获取共享 Weekly Goals 数据。
-   *
-   * goals:
-   * 当前目标列表。
-   *
-   * achievedGoals:
-   * 已完成目标列表。
-   *
-   * addGoal:
-   * 添加目标方法。
-   *
-   * deleteGoal:
-   * 删除目标方法。
-   */
-  const {
-    goals,
-    achievedGoals,
+    loadAchievementsData();
 
-    /**
-     * goalsLoading:
-     * Weekly Goals 是否正在加载。
-     */
-    loading: goalsLoading,
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
-    /**
-     * goalsError:
-     * Weekly Goals 请求错误状态。
-     */
-    error: goalsError,
+  useEffect(() => {
+    let ignore = false;
 
-    /**
-     * addGoal:
-     * 添加新的 Weekly Goal。
-     */
-    addGoal,
+    async function loadWeeklyGoals() {
+      try {
+        setGoalsLoading(true);
+        setGoalsError(null);
 
-    /**
-     * deleteGoal:
-     * 删除 Weekly Goal。
-     */
-    deleteGoal,
+        const weeklyGoals = await getWeeklyGoals();
 
-  } = useWeeklyGoals();
+        if (!ignore) {
+          setGoals(weeklyGoals);
+        }
+      } catch (err) {
+        if (!ignore) {
+          setGoalsError(err);
+        }
+      } finally {
+        if (!ignore) {
+          setGoalsLoading(false);
+        }
+      }
+    }
 
-  /**
-   * 合并页面 loading 状态。
-   *
-   * 只要：
-   * - achievements 正在加载
-   * 或
-   * - goals 正在加载
-   *
-   * 页面就保持 loading。
-   */
-  const loading =
-    achievementsLoading || goalsLoading;
+    loadWeeklyGoals();
 
-  /**
-   * 合并页面 error 状态。
-   *
-   * 任意一个模块请求失败：
-   * 页面都会进入 error 状态。
-   */
-  const error =
-    achievementsError || goalsError;
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
-  /**
-   * 页面空状态判断。
-   *
-   * 满足以下条件时：
-   * empty = true
-   *
-   * 1. 成就 summary 为空
-   * 2. 本周没有已完成目标
-   */
-  const empty =
-    achievementsEmpty &&
-    achievedGoals.length === 0;
+  const achievedGoals = useMemo(
+    () => goals.filter((goal) => goal.achieved),
+    [goals]
+  );
 
-  /**
-   * ==============================
-   * Loading 状态页面
-   * ==============================
-   */
+  const addGoal = async (newGoal) => {
+    const goal = createWeeklyGoal(newGoal);
+    const createdGoal = await addWeeklyGoal(goal);
+
+    setGoals((currentGoals) => [createdGoal, ...currentGoals]);
+
+    return createdGoal;
+  };
+
+  const deleteGoal = async (id) => {
+    await deleteWeeklyGoal(id);
+    setGoals((currentGoals) => currentGoals.filter((goal) => goal.id !== id));
+  };
+
+  const achievementsEmpty =
+    !achievementsLoading &&
+    !achievementsError &&
+    (!data || !data.summary || (data.summary.totalAchievements ?? 0) === 0);
+
+  const loading = achievementsLoading || goalsLoading;
+  const error = achievementsError || goalsError;
+  const empty = achievementsEmpty && achievedGoals.length === 0;
+
   if (loading) {
     return (
       <PageShell>
-
         <main className={styles.achievementsPage}>
           Loading achievements...
         </main>
-
       </PageShell>
     );
   }
 
-  /**
-   * ==============================
-   * Error 状态页面
-   * ==============================
-   */
   if (error) {
     return (
       <PageShell>
-
         <main className={styles.achievementsPage}>
           Failed to load achievements
         </main>
-
       </PageShell>
     );
   }
 
-  /**
-   * ==============================
-   * Empty 状态页面
-   * ==============================
-   */
   if (empty) {
     return (
       <PageShell>
-
         <main className={styles.achievementsPage}>
           No achievements yet
         </main>
-
       </PageShell>
     );
   }
 
-  /**
-   * ==============================
-   * 正常页面内容
-   * ==============================
-   */
   return (
     <PageShell>
-
       <main className={styles.achievementsPage}>
-
-        {/**
-         * AchievementSummary:
-         * 成就概览组件。
-         *
-         * summary:
-         * 成就统计数据。
-         *
-         * trophy:
-         * 奖杯 / 成就图标数据。
-         */}
         <AchievementSummary
           summary={data.summary}
           trophy={data.trophy}
         />
 
-        {/**
-         * WeeklyGoals:
-         * Weekly Goals 组件。
-         *
-         * goals:
-         * 当前目标数据。
-         *
-         * onAddGoal:
-         * 添加目标方法。
-         *
-         * onDeleteGoal:
-         * 删除目标方法。
-         */}
         <WeeklyGoals
           goals={goals}
           onAddGoal={addGoal}
           onDeleteGoal={deleteGoal}
         />
-
       </main>
     </PageShell>
   );
 }
 
-/**
- * 导出 Achievements 页面组件。
- */
 export default Achievements;

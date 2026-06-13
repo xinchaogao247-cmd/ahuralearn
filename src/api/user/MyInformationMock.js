@@ -37,9 +37,9 @@ export const myInformationMock = {
   ],
 
   learningProfile: {
-    email: "alex.rivera@example.com",
-    goal: "Become an AI Engineer",
-    preferredField: "Frontend Development",
-    currentFocus: "Machine Learning",
+    email: "24",
+    goal: "Female",
+    preferredField: "United States",
+    currentFocus: "May 18, 2002",
   },
 };

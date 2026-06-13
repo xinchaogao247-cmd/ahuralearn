@@ -1,24 +1,16 @@
 import { Trash2, X } from "lucide-react";
-import { useState } from "react";
 
 import styles from "./CourseStats.module.css";
 
-export default function CourseStats({ categories, goal, goals, onDeleteGoal }) {
-  const [goalToDelete, setGoalToDelete] = useState(null);
-
-  const closeDeleteDialog = () => {
-    setGoalToDelete(null);
-  };
-
-  const confirmDeleteGoal = () => {
-    if (!goalToDelete) {
-      return;
-    }
-
-    onDeleteGoal(goalToDelete.id);
-    closeDeleteDialog();
-  };
-
+export default function CourseStats({
+  categories,
+  goal,
+  goals,
+  goalToDelete,
+  onRequestDeleteGoal,
+  onCancelDeleteGoal,
+  onConfirmDeleteGoal,
+}) {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.sidebarCard}>
@@ -49,7 +41,7 @@ export default function CourseStats({ categories, goal, goals, onDeleteGoal }) {
                   type="button"
                   className={styles.deleteButton}
                   aria-label={`Delete ${weeklyGoal.title}`}
-                  onClick={() => setGoalToDelete(weeklyGoal)}
+                  onClick={() => onRequestDeleteGoal(weeklyGoal)}
                 >
                   <Trash2 size={15} strokeWidth={2.3} />
                 </button>
@@ -84,7 +76,7 @@ export default function CourseStats({ categories, goal, goals, onDeleteGoal }) {
               type="button"
               className={styles.dialogClose}
               aria-label="Close delete confirmation"
-              onClick={closeDeleteDialog}
+              onClick={onCancelDeleteGoal}
             >
               <X size={17} strokeWidth={2.4} />
             </button>
@@ -99,10 +91,10 @@ export default function CourseStats({ categories, goal, goals, onDeleteGoal }) {
             </p>
 
             <div className={styles.dialogActions}>
-              <button type="button" onClick={closeDeleteDialog}>
+              <button type="button" onClick={onCancelDeleteGoal}>
                 Cancel
               </button>
-              <button type="button" onClick={confirmDeleteGoal}>
+              <button type="button" onClick={onConfirmDeleteGoal}>
                 Delete
               </button>
             </div>
